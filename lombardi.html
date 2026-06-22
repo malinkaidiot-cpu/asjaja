@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lombardi Developer — Devblog</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0a0606;
+    --bg-2: #150a0a;
+    --fg: #ffe8e8;
+    --muted: #8a5560;
+    --accent: #ff2d4f;
+    --accent-2: #ff6b35;
+    --deep: #c41e3a;
+    --border: rgba(255, 45, 79, 0.2);
+    --card: rgba(30, 10, 12, 0.6);
+  }
+
+  * { cursor: none !important; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* === КАСТОМНЫЙ КУРСОР === */
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 14px var(--accent), 0 0 28px rgba(255,45,79,0.5);
+    will-change: transform;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    width: 56px; height: 56px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    will-change: transform, width, height;
+    transition: width 0.35s cubic-bezier(0.23,1,0.32,1),
+                height 0.35s cubic-bezier(0.23,1,0.32,1),
+                border-color 0.3s, background 0.3s;
+    box-shadow: 0 0 24px rgba(255,45,79,0.25), inset 0 0 12px rgba(255,45,79,0.15);
+  }
+
+  /* Вращающееся пунктирное кольцо снаружи */
+  .cursor-ring::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px dashed var(--accent-2);
+    border-radius: 50%;
+    animation: ringSpin 5s linear infinite;
+    opacity: 0.6;
+  }
+
+  /* Вращающаяся дуга внутри */
+  .cursor-ring::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border-top: 2px solid var(--accent);
+    border-right: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-radius: 50%;
+    animation: ringSpin 2.2s linear infinite reverse;
+  }
+
+  @keyframes ringSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  .cursor-ring.hover {
+    width: 96px;
+    height: 96px;
+    border-color: var(--accent-2);
+    background: rgba(255, 107, 53, 0.08);
+  }
+
+  .cursor-ring.click {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* === ФОН === */
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .glow-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 800px 600px at 15% 25%, rgba(255, 45, 79, 0.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 85% 75%, rgba(255, 107, 53, 0.12), transparent 60%),
+      radial-gradient(ellipse 1000px 700px at 50% 110%, rgba(196, 30, 58, 0.15), transparent 60%);
+    pointer-events: none;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* === ТИПОГРАФИКА === */
+  .font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* === ГЛИТЧ === */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+  .glitch::before {
+    color: var(--accent);
+    animation: glitchA 4s infinite;
+  }
+  .glitch::after {
+    color: var(--accent-2);
+    animation: glitchB 4s infinite;
+  }
+  @keyframes glitchA {
+    0%, 92%, 100% { transform: translate(0); opacity: 0; clip-path: inset(0); }
+    93% { transform: translate(-3px, 1px); opacity: 0.85; clip-path: inset(20% 0 60% 0); }
+    95% { transform: translate(2px, -1px); opacity: 0.85; clip-path: inset(50% 0 20% 0); }
+    97% { transform: translate(-1px, 2px); opacity: 0.85; clip-path: inset(10% 0 70% 0); }
+  }
+  @keyframes glitchB {
+    0%, 92%, 100% { transform: translate(0); opacity: 0; clip-path: inset(0); }
+    93% { transform: translate(3px, -1px); opacity: 0.85; clip-path: inset(60% 0 20% 0); }
+    95% { transform: translate(-2px, 1px); opacity: 0.85; clip-path: inset(20% 0 50% 0); }
+    97% { transform: translate(1px, -2px); opacity: 0.85; clip-path: inset(70% 0 10% 0); }
+  }
+
+  /* === REVEAL === */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.23,1,0.32,1), transform 0.9s cubic-bezier(0.23,1,0.32,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* === КАРТОЧКИ ПРОЕКТОВ === */
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,45,79,0.12));
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transition: left 0.7s;
+  }
+  .project-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 30px 60px -20px rgba(255,45,79,0.4), 0 0 0 1px rgba(255,45,79,0.1);
+  }
+  .project-card:hover::before { opacity: 1; }
+  .project-card:hover::after { left: 100%; }
+  .project-card .arrow {
+    transition: transform 0.4s;
+  }
+  .project-card:hover .arrow {
+    transform: translate(6px, -6px) rotate(0deg);
+  }
+
+  /* === YOUTUBE ВИДЖЕТ === */
+  .yt-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 360px;
+    background: rgba(15, 6, 8, 0.88);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    z-index: 100;
+    overflow: hidden;
+    transition: width 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.8), 0 0 60px rgba(255,45,79,0.18);
+  }
+  .yt-widget.collapsed { width: 240px; }
+  .yt-widget.collapsed .yt-body { display: none; }
+
+  .yt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(255,45,79,0.18), rgba(196,30,58,0.06));
+    border-bottom: 1px solid var(--border);
+    cursor: grab;
+    user-select: none;
+  }
+  .yt-header:active { cursor: grabbing; }
+  .yt-body { padding: 12px; }
+  .yt-video {
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .yt-video iframe { width: 100%; height: 100%; border: 0; display: block; }
+  
+  .yt-widget.dragging {
+    box-shadow: 0 40px 100px -10px rgba(0,0,0,0.9), 0 0 80px rgba(255,45,79,0.35);
+  }
+
+  /* === БЕГУЩАЯ СТРОКА === */
+  .marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+  .marquee-content {
+    display: inline-block;
+    animation: marquee 35s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* === ПУЛЬС === */
+  .pulse-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,45,79,0.7); }
+    70% { box-shadow: 0 0 0 14px rgba(255,45,79,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,45,79,0); }
+  }
+
+  /* === ЛЕЙБЛ СЕКЦИИ === */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-label::before {
+    content: '';
+    width: 36px; height: 1px;
+    background: var(--accent);
+  }
+
+  /* === СТАТИСТИКА === */
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4.5rem;
+    line-height: 1;
+    background: linear-gradient(180deg, var(--fg) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* === БЕЙДЖИ === */
+  .tech-badge {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--fg);
+    background: rgba(255,45,79,0.04);
+    transition: all 0.3s;
+    display: inline-block;
+  }
+  .tech-badge:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px -8px var(--accent);
+  }
+
+  /* === НАВИГАЦИЯ === */
+  nav a.nav-link {
+    position: relative;
+    transition: color 0.3s;
+  }
+  nav a.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.35s;
+  }
+  nav a.nav-link:hover::after { width: 100%; }
+  nav a.nav-link:hover { color: var(--accent); }
+
+  /* === ПРОГРЕСС-БАР === */
+  .progress-bar {
+    position: relative;
+    height: 6px;
+    background: rgba(255,45,79,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--deep), var(--accent), var(--accent-2));
+    border-radius: 999px;
+    transform: translateX(-100%);
+    transition: transform 1.4s cubic-bezier(0.23,1,0.32,1);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .reveal.visible .progress-fill {
+    transform: translateX(0);
+  }
+
+  /* === СКРОЛЛБАР === */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--deep));
+    border-radius: 4px;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* === АДАПТИВ === */
+  @media (max-width: 768px) {
+    * { cursor: auto !important; }
+    .cursor-dot, .cursor-ring { display: none; }
+    .yt-widget {
+      width: calc(100vw - 24px) !important;
+      right: 12px;
+      bottom: 12px;
+    }
+    .yt-widget.collapsed { width: 200px !important; }
+  }
+
+  /* Кнопка */
+  .btn-primary {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary > * { position: relative; z-index: 1; }
+  .btn-primary:hover { box-shadow: 0 14px 40px -10px var(--accent); transform: translateY(-2px); }
+
+  /* Скролл индикатор */
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    background-size: 100% 200%;
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0% { background-position: 0% 200%; }
+    100% { background-position: 0% -200%; }
+  }
+
+  /* Терминальный курсор */
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--accent);
+    animation: blink 1s steps(1) infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Кастомный курсор: точка + анимированное кольцо с задержкой -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Атмосферный фон -->
+  <div class="glow-bg"></div>
+  <canvas id="particles"></canvas>
+  <div class="noise"></div>
+
+  <!-- НАВИГАЦИЯ -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex items-center justify-between backdrop-blur-xl bg-black/40 border-b border-red-900/20">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center font-display text-2xl text-black shadow-lg shadow-red-900/40">L</div>
+      <span class="font-mono text-xs md:text-sm tracking-[0.2em] text-red-100/80">LOMBARDI.DEV</span>
+    </div>
+    <div class="hidden md:flex items-center gap-9 text-sm font-mono text-red-100/70">
+      <a href="#work" class="nav-link">/work</a>
+      <a href="#about" class="nav-link">/about</a>
+      <a href="#stack" class="nav-link">/stack</a>
+      <a href="#contact" class="nav-link">/contact</a>
+    </div>
+    <div class="flex items-center gap-2 text-xs font-mono text-red-400">
+      <div class="pulse-dot"></div>
+      <span class="hidden sm:inline">ONLINE</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex items-center px-6 md:px-10 pt-24 pb-16">
+    <div class="max-w-7xl mx-auto w-full grid md:grid-cols-12 gap-10 items-center relative z-10">
+      <div class="md:col-span-8">
+        <div class="section-label mb-8 reveal">Devblog / 2024 Edition</div>
+        <h1 class="font-display text-6xl sm:text-7xl md:text-[9rem] lg:text-[11rem] leading-[0.85] mb-8">
+          <span class="block text-red-100/70">Hello, I'm</span>
+          <span class="block glitch text-red-100" data-text="LOMBARDI">LOMBARDI</span>
+          <span class="block text-transparent" style="-webkit-text-stroke: 2px var(--accent); -webkit-text-fill-color: transparent;">DEVELOPER</span>
+        </h1>
+        <p class="text-lg md:text-xl text-red-100/60 max-w-2xl mb-10 leading-relaxed">
+          Инженер-программист. Строю быстрые, надёжные и красивые системы — 
+          от ядер ОС до распределённых кэшей. Восемь лет в продакшене, 
+          сотни выкаток, ноль睡不着 ночей.
+        </p>
+        <div class="flex flex-wrap gap-4 items-center">
+          <a href="#work" class="btn-primary px-8 py-4 bg-red-600 text-black font-bold tracking-wider text-sm">
+            <span>СМОТРЕТЬ ПРОЕКТЫ →</span>
+          </a>
+          <a href="#contact" class="px-8 py-4 border border-red-900/60 hover:border-red-500 hover:bg-red-950/30 transition-all font-mono text-sm text-red-100/80">
+            СВЯЗАТЬСЯ
+          </a>
+        </div>
+      </div>
+
+      <div class="md:col-span-4 hidden md:block reveal">
+        <!-- Терминал -->
+        <div class="bg-black/70 border border-red-900/40 rounded-xl overflow-hidden backdrop-blur-md shadow-2xl shadow-red-950/30">
+          <div class="flex items-center gap-2 px-4 py-3 border-b border-red-900/30 bg-red-950/30">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-red-700"></div>
+            <div class="w-3 h-3 rounded-full bg-red-900"></div>
+            <span class="ml-3 font-mono text-xs text-red-300/60">~/lombardi — zsh</span>
+          </div>
+          <div class="p-5 font-mono text-sm space-y-2 leading-relaxed">
+            <div><span class="text-red-500">$</span> <span class="text-red-200">whoami</span></div>
+            <div class="text-red-100/70 pl-2">lombardi_dev</div>
+            <div class="mt-2"><span class="text-red-500">$</span> <span class="text-red-200">cat status.json</span></div>
+            <div class="text-red-100/70 pl-2">{</div>
+            <div class="pl-4 text-red-100/70">"role": <span class="text-amber-300">"Senior Engineer"</span>,</div>
+            <div class="pl-4 text-red-100/70">"location": <span class="text-amber-300">"Remote"</span>,</div>
+            <div class="pl-4 text-red-100/70">"years": <span class="text-amber-300">8</span>,</div>
+            <div class="pl-4 text-red-100/70">"coffee": <span class="text-amber-300">true</span></div>
+            <div class="text-red-100/70">}</div>
+            <div class="mt-2"><span class="text-red-500">$</span> <span class="text-red-200">ls projects/</span></div>
+            <div class="text-red-100/70 pl-2">crimson-cache/ ember-forge/ pyre/...</div>
+            <div class="mt-2 flex items-center gap-2"><span class="text-red-500">$</span> <span class="terminal-cursor"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Скролл индикатор -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-red-300/50 font-mono text-[10px] tracking-widest">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- БЕГУЩАЯ СТРОКА -->
+  <section class="py-7 border-y border-red-900/20 bg-red-950/10 overflow-hidden">
+    <div class="marquee">
+      <div class="marquee-content font-display text-4xl text-red-200/25">
+        <span class="px-10">RUST</span>✦<span class="px-10">GO</span>✦<span class="px-10">C++20</span>✦<span class="px-10">TYPESCRIPT</span>✦<span class="px-10">POSTGRES</span>✦<span class="px-10">REDIS</span>✦<span class="px-10">DOCKER</span>✦<span class="px-10">K8S</span>✦<span class="px-10">GITHUB</span>✦<span class="px-10">RUST</span>✦<span class="px-10">GO</span>✦<span class="px-10">C++20</span>✦<span class="px-10">TYPESCRIPT</span>✦<span class="px-10">POSTGRES</span>✦<span class="px-10">REDIS</span>✦<span class="px-10">DOCKER</span>✦<span class="px-10">K8S</span>✦<span class="px-10">GITHUB</span>✦
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-28 md:py-36 px-6 md:px-10 relative">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
+      <div class="md:col-span-7 reveal">
+        <div class="section-label mb-7">/ 01 — About</div>
+        <h2 class="font-display text-5xl md:text-7xl mb-8 leading-none">
+          Кодю <span class="text-red-500">с 2016</span>.<br>
+          Не останавливаюсь.
+        </h2>
+        <div class="space-y-5 text-red-100/70 text-lg leading-relaxed">
+          <p>Начинал с утилит на C, потом ушёл в backend-инфраструктуру и системное программирование. За восемь лет построил распределённые системы, переваривающие миллионы RPS, и инструменты, которыми пользуются тысячи разработчиков.</p>
+          <p>Сейчас фокус — performance-critical системы на Rust и Go, архитектура высоконагруженных сервисов и devtools. Каждая строчка кода должна быть оправдана. Каждая абстракция — выстрадана.</p>
+        </div>
+      </div>
+
+      <div class="md:col-span-5 reveal">
+        <div class="grid grid-cols-2 gap-5">
+          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
+            <div class="stat-num">47</div>
+            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Релизов</div>
+          </div>
+          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
+            <div class="stat-num">8</div>
+            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Лет в коде</div>
+          </div>
+          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
+            <div class="stat-num">12K</div>
+            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">GitHub ★</div>
+          </div>
+          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
+            <div class="stat-num">∞</div>
+            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Кофе выпито</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="work" class="py-28 md:py-36 px-6 md:px-10 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-end justify-between mb-16 reveal">
+        <div>
+          <div class="section-label mb-7">/ 02 — Selected Work</div>
+          <h2 class="font-display text-6xl md:text-8xl leading-none">Проекты</h2>
+        </div>
+        <div class="hidden md:block font-mono text-xs text-red-300/50 tracking-widest">06 PROJECTS</div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/crimson11/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">01 / CACHE</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">CRIMSON CACHE</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Распределённый in-memory кэш с sharding, репликацией и Lua-скриптами. Latency под 100μs на чтение.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">Rust</span>
+            <span class="tech-badge">Tokio</span>
+            <span class="tech-badge">Raft</span>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/ember22/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">02 / DEVTOOLS</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">EMBER FORGE</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Сборщик frontend-проектов с инкрементальной компиляцией. В 8 раз быстрее Vite на крупных монорепах.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">Go</span>
+            <span class="tech-badge">WASM</span>
+            <span class="tech-badge">ESM</span>
+          </div>
+        </article>
+
+        <!-- 3 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/pyre33/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">03 / NETWORKING</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">PYRE PROTOCOL</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">P2P библиотека с end-to-end шифрованием и NAT traversal. Под капотом нескольких мессенджеров.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">C++20</span>
+            <span class="tech-badge">QUIC</span>
+            <span class="tech-badge">Noise</span>
+          </div>
+        </article>
+
+        <!-- 4 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/scarlet44/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">04 / SYNC</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">SCARLET SYNC</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Real-time движок для коллаборативных редакторов. CRDT-синхронизация, офлайн-режим, авто-резолв конфликтов.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">TypeScript</span>
+            <span class="tech-badge">CRDT</span>
+            <span class="tech-badge">WebSocket</span>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/inferno55/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">05 / UI</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">INFERNO UI</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Headless component-библиотека для React. Полная типобезопасность, нулевой runtime-overhead, A11y из коробки.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">React</span>
+            <span class="tech-badge">CSS-in-JS</span>
+            <span class="tech-badge">A11y</span>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <article class="project-card rounded-2xl p-6 reveal">
+          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative">
+            <img src="https://picsum.photos/seed/sanguine66/800/500.jpg" alt="" class="w-full h-full object-cover filter saturate-[0.6] contrast-125 brightness-90 hover:scale-105 transition-transform duration-[1.2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent"></div>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-[10px] text-red-400 tracking-widest">06 / OS</span>
+            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
+          </div>
+          <h3 class="font-display text-3xl mb-3">SANGUINE OS</h3>
+          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Минималистичное ядро ОС для x86_64. Multitasking, виртуальная память, своя FS. Пет-проект для души.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="tech-badge">C</span>
+            <span class="tech-badge">ASM</span>
+            <span class="tech-badge">x86_64</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack" class="py-28 md:py-36 px-6 md:px-10 relative">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
+      <div class="md:col-span-5 reveal">
+        <div class="section-label mb-7">/ 03 — Stack</div>
+        <h2 class="font-display text-5xl md:text-7xl leading-none mb-7">Инструменты</h2>
+        <p class="text-red-100/60 text-lg leading-relaxed">Технологии, которыми пользуюсь каждый день. Не модные — а эффективные.</p>
+      </div>
+
+      <div class="md:col-span-7 reveal">
+        <div class="space-y-7">
+          <div>
+            <div class="flex justify-between font-mono text-xs mb-3">
+              <span class="text-red-100/80">Системное программирование</span>
+              <span class="text-red-400">98%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 98%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-mono text-xs mb-3">
+              <span class="text-red-100/80">Backend / Распределённые системы</span>
+              <span class="text-red-400">95%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 95%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-mono text-xs mb-3">
+              <span class="text-red-100/80">Базы данных</span>
+              <span class="text-red-400">92%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 92%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-mono text-xs mb-3">
+              <span class="text-red-100/80">DevOps / Инфраструктура</span>
+              <span class="text-red-400">88%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 88%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-mono text-xs mb-3">
+              <span class="text-red-100/80">Frontend / TypeScript</span>
+              <span class="text-red-400">85%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-10">
+          <span class="tech-badge">Rust</span>
+          <span class="tech-badge">Go</span>
+          <span class="tech-badge">C / C++</span>
+          <span class="tech-badge">TypeScript</span>
+          <span class="tech-badge">Python</span>
+          <span class="tech-badge">PostgreSQL</span>
+          <span class="tech-badge">Redis</span>
+          <span class="tech-badge">ClickHouse</span>
+          <span class="tech-badge">Kafka</span>
+          <span class="tech-badge">Kubernetes</span>
+          <span class="tech-badge">Docker</span>
+          <span class="tech-badge">Terraform</span>
+          <span class="tech-badge">gRPC</span>
+          <span class="tech-badge">NATS</span>
+          <span class="tech-badge">Linux</span>
+          <span class="tech-badge">eBPF</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / FOOTER -->
+  <footer id="contact" class="py-28 md:py-36 px-6 md:px-10 border-t border-red-900/20 relative">
+    <div class="max-w-7xl mx-auto">
+      <div class="reveal mb-20">
+        <div class="section-label mb-7">/ 04 — Contact</div>
+        <h2 class="font-display text-6xl sm:text-7xl md:text-9xl leading-[0.85] mb-10">
+          ДАВАЙ<br>
+          <span class="text-red-500">ПОКОДИМ</span><br>
+          ВМЕСТЕ.
+        </h2>
+        <a href="mailto:hello@lombardi.dev" class="inline-flex items-center gap-4 font-mono text-xl md:text-2xl text-red-300 hover:text-red-500 transition-colors group">
+          <span class="border-b border-red-900 group-hover:border-red-500 pb-1">hello@lombardi.dev</span>
+          <i class="fas fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+        </a>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between gap-6 pt-8 border-t border-red-900/20 font-mono text-xs text-red-300/40">
+        <div>© 2024 LOMBARDI DEVELOPER — ALL RIGHTS RESERVED</div>
+        <div class="flex gap-7">
+          <a href="#" class="hover:text-red-400 transition-colors">GITHUB</a>
+          <a href="#" class="hover:text-red-400 transition-colors">TWITTER</a>
+          <a href="#" class="hover:text-red-400 transition-colors">TELEGRAM</a>
+          <a href="#" class="hover:text-red-400 transition-colors">RSS</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- YOUTUBE ВИДЖЕТ -->
+  <div class="yt-widget" id="ytWidget">
+    <div class="yt-header" id="ytHeader">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500"></div>
+        <div>
+          <div class="font-mono text-[10px] text-red-300/60 tracking-widest">NOW PLAYING</div>
+          <div class="font-mono text-sm text-red-100">Dev Session / Loop</div>
+        </div>
+      </div>
+      <button id="ytToggle" class="text-red-300/60 hover:text-red-400 text-sm w-7 h-7 flex items-center justify-center rounded hover:bg-red-900/30 transition-colors" aria-label="Свернуть виджет">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+    <div class="yt-body">
+      <div class="yt-video">
+        <iframe
+          src="https://www.youtube.com/embed/5Z-_8zklHrw?start=4374&autoplay=0&rel=0&modestbranding=1"
+          title="Dev Session"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+      <div class="mt-3 flex items-center justify-between font-mono text-[10px] text-red-300/40">
+        <span>id=5Z-_8zklHrw</span>
+        <span>t=1:12:54</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====================================================
+    //  КАСТОМНЫЙ КУРСОР: точка + кольцо с задержкой следования
+    // ====================================================
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let dotX = mouseX, dotY = mouseY;
+    let ringX = mouseX, ringY = mouseY;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Анимационный цикл: точка следует почти мгновенно,
+    // кольцо — с задержкой через линейную интерполяцию (lerp).
+    function animateCursor() {
+      // Точка: коэффициент 0.55 — почти мгновенно, но с микро-сглаживанием
+      dotX += (mouseX - dotX) * 0.55;
+      dotY += (mouseY - dotY) * 0.55;
+      dot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+
+      // Кольцо: коэффициент 0.12 — заметная задержка, плавное "доганяние"
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Реакция кольца на интерактивные элементы
+    document.querySelectorAll('a, button, [data-hover], .project-card, .tech-badge, input, textarea').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    // Клик-эффект
+    document.addEventListener('mousedown', () => ring.classList.add('click'));
+    document.addEventListener('mouseup', () => ring.classList.remove('click'));
+
+    // Скрытие курсора, когда курсор покидает окно
+    document.addEventListener('mouseleave', () => {
+      dot.style.opacity = '0';
+      ring.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      dot.style.opacity = '1';
+      ring.style.opacity = '1';
+    });
+
+    // ====================================================
+    //  ЧАСТИЦЫ-ИСКРЫ на фоне (красные тона)
+    // ====================================================
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
+    }
+    resize();
+    window.addEventListener('resize', () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      resize();
+    });
+
+    class Ember {
+      constructor() { this.reset(true); }
+      reset(initial = false) {
+        this.x = Math.random() * window.innerWidth;
+        this.y = initial ? Math.random() * window.innerHeight : window.innerHeight + Math.random() * 50;
+        this.size = Math.max(0.4, Math.random() * 2.2 + 0.4);
+        this.speedY = -(Math.random() * 0.7 + 0.25);
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.life = 0;
+        this.maxLife = Math.random() * 280 + 120;
+        // Цветовой оттенок: от глубокого красного до оранжевого
+        this.hue = 350 + Math.random() * 35;
+        this.flicker = Math.random() * 0.5 + 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedX += (Math.random() - 0.5) * 0.04;
+        this.life++;
+        if (this.y < -20 || this.life > this.maxLife) this.reset();
+      }
+      draw() {
+        const lifeRatio = this.life / this.maxLife;
+        const alpha = Math.sin(lifeRatio * Math.PI) * 0.85 * this.flicker;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${this.hue}, 95%, 62%, ${alpha})`;
+        ctx.shadowColor = `hsla(${this.hue}, 95%, 60%, 0.9)`;
+        ctx.shadowBlur = 12;
+        ctx.fill();
+      }
+    }
+
+    const PARTICLE_COUNT = Math.min(90, Math.floor(window.innerWidth / 16));
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Ember());
+
+    function animateParticles() {
+      ctx.fillStyle = 'rgba(10, 6, 6, 0.12)';
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.shadowBlur = 0;
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ====================================================
+    //  REVEAL при скролле
+    // ====================================================
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ====================================================
+    //  YOUTUBE ВИДЖЕТ: сворачивание + перетаскивание
+    // ====================================================
+    const ytWidget = document.getElementById('ytWidget');
+    const ytToggle = document.getElementById('ytToggle');
+    const ytHeader = document.getElementById('ytHeader');
+    let collapsed = false;
+
+    ytToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      collapsed = !collapsed;
+      ytWidget.classList.toggle('collapsed', collapsed);
+      ytToggle.innerHTML = collapsed ? '<i class="fas fa-plus"></i>' : '<i class="fas fa-minus"></i>';
+    });
+
+    // Drag виджета за шапку
+    let isDragging = false;
+    let offsetX = 0, offsetY = 0;
+
+    ytHeader.addEventListener('mousedown', e => {
+      if (e.target.closest('button')) return;
+      isDragging = true;
+      const rect = ytWidget.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      ytWidget.style.transition = 'box-shadow 0.4s';
+      ytWidget.classList.add('dragging');
+      ytWidget.style.right = 'auto';
+      ytWidget.style.bottom = 'auto';
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const x = Math.max(8, Math.min(window.innerWidth - ytWidget.offsetWidth - 8, e.clientX - offsetX));
+      const y = Math.max(8, Math.min(window.innerHeight - ytWidget.offsetHeight - 8, e.clientY - offsetY));
+      ytWidget.style.left = x + 'px';
+      ytWidget.style.top = y + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        ytWidget.classList.remove('dragging');
+        ytWidget.style.transition = '';
+      }
+    });
+
+    // Touch drag для мобильных
+    ytHeader.addEventListener('touchstart', e => {
+      if (e.target.closest('button')) return;
+      isDragging = true;
+      const touch = e.touches[0];
+      const rect = ytWidget.getBoundingClientRect();
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+      ytWidget.classList.add('dragging');
+      ytWidget.style.right = 'auto';
+      ytWidget.style.bottom = 'auto';
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const x = Math.max(8, Math.min(window.innerWidth - ytWidget.offsetWidth - 8, touch.clientX - offsetX));
+      const y = Math.max(8, Math.min(window.innerHeight - ytWidget.offsetHeight - 8, touch.clientY - offsetY));
+      ytWidget.style.left = x + 'px';
+      ytWidget.style.top = y + 'px';
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+      ytWidget.classList.remove('dragging');
+    });
+
+    // ====================================================
+    //  Параллакс для hero-имени при движении мыши
+    // ====================================================
+    const heroName = document.querySelector('.glitch');
+    document.addEventListener('mousemove', e => {
+      if (!heroName) return;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      heroName.style.transform = `translate(${dx * 8}px, ${dy * 6}px)`;
+    });
+
+    // ====================================================
+    //  Плавный скролл по якорям
+    // ====================================================
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href === '#') return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
