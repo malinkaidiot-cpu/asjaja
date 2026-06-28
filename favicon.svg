@@ -1,10 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0a0606"/>
-  <rect x="4" y="4" width="56" height="56" rx="12" fill="none" stroke="#ff2d4f" stroke-width="3"/>
-  <text x="50%" y="55%" text-anchor="middle"
-        dominant-baseline="middle"
-        font-family="Arial, sans-serif"
-        font-size="38"
-        font-weight="900"
-        fill="#ff2d4f">L</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    @keyframes spin1 {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes spin2 {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.7; }
+      50%      { opacity: 1; }
+    }
+    .o1 { animation: spin1 8s linear infinite; transform-origin: 50px 50px; }
+    .o2 { animation: spin2 5s linear infinite; transform-origin: 50px 50px; }
+    .core { animation: pulse 2.5s ease-in-out infinite; }
+  </style>
+
+  <rect width="100" height="100" rx="18" fill="#06060f"/>
+
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#1a0a3a" stroke-width="0.5"/>
+  <circle cx="50" cy="50" r="36" fill="none" stroke="#220a5a" stroke-width="0.5"/>
+  <circle cx="50" cy="50" r="24" fill="none" stroke="#330a6a" stroke-width="0.5"/>
+
+  <g class="o1">
+    <ellipse cx="50" cy="50" rx="36" ry="10" fill="none" stroke="#3311aa" stroke-width="0.8" opacity="0.7" transform="rotate(20 50 50)"/>
+    <circle cx="50" cy="14" r="3.5" fill="#8844ff"/>
+    <circle cx="50" cy="86" r="2.5" fill="#6622dd" opacity="0.9"/>
+  </g>
+
+  <g class="o2">
+    <ellipse cx="50" cy="50" rx="24" ry="7" fill="none" stroke="#5522cc" stroke-width="0.8" opacity="0.6" transform="rotate(-30 50 50)"/>
+    <circle cx="50" cy="26" r="2.5" fill="#ff6633"/>
+    <circle cx="50" cy="74" r="2" fill="#ee4422" opacity="0.9"/>
+  </g>
+
+  <circle cx="50" cy="50" r="12" fill="#120830"/>
+  <circle cx="50" cy="50" r="11" fill="none" stroke="#8844ff" stroke-width="1.2" opacity="0.9"/>
+  <circle cx="50" cy="50" r="6" fill="#1a0050"/>
+  <circle cx="50" cy="50" r="5.5" fill="none" stroke="#cc66ff" stroke-width="1" opacity="0.8"/>
+  <circle cx="50" cy="50" r="2.5" fill="#ffffff" class="core"/>
+  <circle cx="47.5" cy="47.5" r="1" fill="#ffffff" opacity="0.5"/>
 </svg>
