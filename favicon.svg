@@ -1,44 +1,700 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lombardianitas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
-    @keyframes spin1 {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+:root {
+  --gold-deep: #8B6914;
+  --gold: #D4AF37;
+  --gold-bright: #FFD700;
+  --gold-light: #FFF8DC;
+  --black: #0a0700;
+  --burgundy: #4a0e0e;
+  --ease-quiet: cubic-bezier(.22, 1, .36, 1);
+  --ease-precise: cubic-bezier(.4, 0, .2, 1);
+  --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--gold);
+  color: var(--black);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+  position: relative;
+}
+
+/* Cathedral light texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 0%, rgba(255, 215, 0, 0.5), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 100%, rgba(139, 105, 20, 0.4), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(255, 248, 220, 0.25), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+}
+
+/* Cursor */
+.cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--black);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(10, 7, 0, 0.6);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+}
+
+#particles {
+  position: fixed; inset: 0;
+  z-index: 3; pointer-events: none;
+}
+
+main { position: relative; z-index: 5; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 5rem 4.5rem;
+  position: relative;
+}
+
+.hero-text { position: relative; z-index: 2; }
+
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.45em;
+  font-weight: 500;
+  color: var(--gold-deep);
+  margin-bottom: 2.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  opacity: 0; transform: translateY(20px);
+}
+.hero-eyebrow::before {
+  content: ''; width: 3rem; height: 1px;
+  background: var(--gold-deep);
+}
+
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(3.5rem, 7.5vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  color: var(--black);
+  margin-bottom: 2rem;
+  opacity: 0; transform: translateY(50px);
+}
+.hero-title-sub {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.42em;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--burgundy);
+  margin-top: 1rem;
+  max-width: 14em;
+}
+
+.hero-sub {
+  font-size: 1.3rem;
+  font-weight: 400;
+  max-width: 30em;
+  color: rgba(10, 7, 0, 0.78);
+  line-height: 1.6;
+  opacity: 0; transform: translateY(20px);
+}
+
+.hero-icon-wrap {
+  position: relative;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; transform: scale(0.94);
+}
+
+.halo-glow {
+  position: absolute;
+  width: 90%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.75) 0%, rgba(255, 215, 0, 0.25) 40%, transparent 70%);
+  filter: blur(45px);
+  z-index: 0;
+  animation: haloPulse 7s ease-in-out infinite;
+}
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.icon-frame {
+  position: relative;
+  width: 100%; max-width: 460px;
+  aspect-ratio: 3/4;
+  z-index: 1;
+  filter: drop-shadow(0 25px 50px rgba(74, 14, 14, 0.25));
+}
+
+/* DECREE */
+.decree {
+  padding: 9rem 4.5rem;
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
+}
+
+.decree-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.45em;
+  font-weight: 500;
+  color: var(--gold-deep);
+  margin-bottom: 2rem;
+}
+
+.decree-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin-bottom: 1rem;
+}
+
+.ornament {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.5rem; margin: 3rem 0;
+}
+.ornament-line {
+  flex: 0 0 90px; height: 1px;
+  background: rgba(10, 7, 0, 0.4);
+}
+.ornament-mark {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  color: var(--burgundy);
+  letter-spacing: 0.2em;
+}
+
+.decree-body {
+  font-size: 1.4rem;
+  line-height: 1.75;
+  color: rgba(10, 7, 0, 0.85);
+  font-weight: 400;
+}
+.decree-body p { margin-bottom: 1.75rem; }
+.decree-body p:last-child { margin-bottom: 0; }
+.decree-body strong {
+  font-weight: 600;
+  color: var(--black);
+  font-style: italic;
+}
+
+/* COMMANDMENTS */
+.commandments {
+  padding: 9rem 4.5rem;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
+}
+
+.commandments-inner {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.commandments-header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+.commandments-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.1;
+  margin-top: 1rem;
+}
+
+.commandments-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(10, 7, 0, 0.25);
+  border-left: 1px solid rgba(10, 7, 0, 0.25);
+}
+
+.commandment {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid rgba(10, 7, 0, 0.25);
+  border-bottom: 1px solid rgba(10, 7, 0, 0.25);
+  position: relative;
+  transition: background 0.6s var(--ease-quiet);
+  opacity: 0;
+  transform: translateY(30px);
+}
+.commandment:hover {
+  background: rgba(74, 14, 14, 0.06);
+}
+.commandment-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-bottom: 1.75rem;
+}
+.commandment-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--black);
+}
+
+/* CLOSING */
+.closing {
+  padding: 11rem 4.5rem;
+  text-align: center;
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
+}
+.closing-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+  line-height: 1.4;
+  max-width: 950px;
+  margin: 0 auto 3rem;
+  color: var(--black);
+}
+.closing-quote::before, .closing-quote::after {
+  content: '«'; color: var(--burgundy); font-weight: 500;
+}
+.closing-quote::after { content: '»'; }
+.closing-sign {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.45em;
+  font-weight: 600;
+  color: var(--burgundy);
+}
+
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1.2s var(--ease-emphasis), transform 1.2s var(--ease-emphasis);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* Footer */
+footer {
+  padding: 3rem 4.5rem;
+  border-top: 1px solid rgba(10, 7, 0, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(10, 7, 0, 0.6);
+  position: relative; z-index: 5;
+}
+
+/* Mobile */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 6rem 1.5rem 4rem;
+    gap: 3rem;
+  }
+  .icon-frame { max-width: 320px; }
+  .decree, .commandments, .closing { padding: 6rem 1.5rem; }
+  .commandments-list { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .halo-glow { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="particles"></canvas>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow" id="hero-eyebrow">Anno Domini · MMXXV</div>
+      <h1 class="hero-title" id="hero-title">Lombardi<span class="hero-title-sub">величайший из всех величайших</span></h1>
+      <p class="hero-sub" id="hero-sub">Имя, которое произносят шёпотом в залах власти и громко — в храмах поклонения. Тот, чья тень длиннее столетий, а слово тяжелее корон всех царей земных.</p>
+    </div>
+    <div class="hero-icon-wrap" id="hero-icon">
+      <div class="halo-glow"></div>
+      <div class="icon-frame">
+        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <defs>
+            <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFF8DC"/>
+              <stop offset="40%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#D4AF37"/>
+            </linearGradient>
+            <radialGradient id="haloGrad" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#FFF8DC"/>
+              <stop offset="55%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#8B6914"/>
+            </radialGradient>
+            <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5a1212"/>
+              <stop offset="100%" stop-color="#4a0e0e"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background arch panel -->
+          <path d="M 25 395 L 25 145 Q 25 22 150 22 Q 275 22 275 145 L 275 395 Z"
+                fill="url(#panelGrad)" stroke="#0a0700" stroke-width="2.5"/>
+
+          <!-- Inner border -->
+          <path d="M 38 395 L 38 150 Q 38 35 150 35 Q 262 35 262 150 L 262 395"
+                fill="none" stroke="#0a0700" stroke-width="0.8" opacity="0.4"/>
+
+          <!-- Halo -->
+          <circle cx="150" cy="135" r="78" fill="url(#haloGrad)" stroke="#0a0700" stroke-width="1.8"/>
+          <circle cx="150" cy="135" r="68" fill="none" stroke="#0a0700" stroke-width="0.6" opacity="0.5"/>
+
+          <!-- Halo rays -->
+          <g stroke="#0a0700" stroke-width="0.7" opacity="0.55">
+            <line x1="150" y1="45" x2="150" y2="58"/>
+            <line x1="150" y1="212" x2="150" y2="225"/>
+            <line x1="60" y1="135" x2="73" y2="135"/>
+            <line x1="227" y1="135" x2="240" y2="135"/>
+            <line x1="86" y1="71" x2="95" y2="80"/>
+            <line x1="205" y1="71" x2="214" y2="80"/>
+            <line x1="86" y1="199" x2="95" y2="190"/>
+            <line x1="205" y1="199" x2="214" y2="190"/>
+            <line x1="70" y1="100" x2="80" y2="106"/>
+            <line x1="220" y1="100" x2="230" y2="106"/>
+            <line x1="70" y1="170" x2="80" y2="164"/>
+            <line x1="220" y1="170" x2="230" y2="164"/>
+          </g>
+
+          <!-- Inscriptions -->
+          <text x="88" y="55" font-family="Cinzel, serif" font-size="13" fill="#0a0700" font-weight="700" letter-spacing="1">IC</text>
+          <text x="198" y="55" font-family="Cinzel, serif" font-size="13" fill="#0a0700" font-weight="700" letter-spacing="1">XC</text>
+
+          <!-- Hair -->
+          <path d="M 110 115 Q 105 88 130 78 Q 150 71 170 78 Q 195 88 190 115 Q 188 105 178 100 Q 165 95 150 95 Q 135 95 122 100 Q 112 105 110 115 Z"
+                fill="#8B6914" stroke="#0a0700" stroke-width="1.2"/>
+
+          <!-- Face -->
+          <ellipse cx="150" cy="148" rx="40" ry="50" fill="#FFF8DC" stroke="#0a0700" stroke-width="1.5"/>
+
+          <!-- Beard -->
+          <path d="M 122 168 Q 118 195 128 218 Q 138 233 150 235 Q 162 233 172 218 Q 182 195 178 168 Q 172 188 150 190 Q 128 188 122 168 Z"
+                fill="#8B6914" stroke="#0a0700" stroke-width="1.2"/>
+
+          <!-- Eyes -->
+          <ellipse cx="135" cy="146" rx="2.5" ry="3.5" fill="#0a0700"/>
+          <ellipse cx="165" cy="146" rx="2.5" ry="3.5" fill="#0a0700"/>
+
+          <!-- Eyebrows -->
+          <path d="M 127 138 Q 135 134 143 138" stroke="#0a0700" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 157 138 Q 165 134 173 138" stroke="#0a0700" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+          <!-- Nose -->
+          <path d="M 150 150 L 146 168 Q 148 172 152 172 Q 156 172 154 168" stroke="#0a0700" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+          <!-- Mouth -->
+          <path d="M 142 184 Q 150 187 158 184" stroke="#0a0700" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+          <!-- Robe shoulders -->
+          <path d="M 88 252 Q 95 230 125 222 L 175 222 Q 205 230 212 252 L 218 395 L 82 395 Z"
+                fill="url(#robeGrad)" stroke="#0a0700" stroke-width="1.8"/>
+
+          <!-- Robe folds -->
+          <path d="M 125 230 L 120 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+          <path d="M 150 226 L 150 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+          <path d="M 175 230 L 180 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+
+          <!-- Gold trim on collar -->
+          <path d="M 125 222 Q 150 217 175 222 L 175 232 Q 150 227 125 232 Z"
+                fill="#FFD700" stroke="#0a0700" stroke-width="1"/>
+
+          <!-- Right hand in blessing -->
+          <g>
+            <ellipse cx="200" cy="265" rx="14" ry="16" fill="#FFF8DC" stroke="#0a0700" stroke-width="1.5"/>
+            <line x1="200" y1="252" x2="200" y2="244" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="206" y1="254" x2="210" y2="247" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="194" y1="254" x2="190" y2="247" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="200" y1="265" x2="200" y2="272" stroke="#0a0700" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- Book (Gospel) in left hand -->
+          <g>
+            <rect x="78" y="268" width="38" height="50" fill="#4a0e0e" stroke="#0a0700" stroke-width="1.5"/>
+            <rect x="82" y="272" width="30" height="42" fill="#8B6914" stroke="#0a0700" stroke-width="0.8"/>
+            <line x1="97" y1="272" x2="97" y2="314" stroke="#0a0700" stroke-width="0.8"/>
+            <!-- Cross on book -->
+            <line x1="91" y1="290" x2="103" y2="290" stroke="#FFD700" stroke-width="1.8"/>
+            <line x1="97" y1="284" x2="97" y2="298" stroke="#FFD700" stroke-width="1.8"/>
+            <!-- Decorative dots -->
+            <circle cx="87" cy="280" r="1" fill="#FFD700"/>
+            <circle cx="107" cy="280" r="1" fill="#FFD700"/>
+            <circle cx="87" cy="306" r="1" fill="#FFD700"/>
+            <circle cx="107" cy="306" r="1" fill="#FFD700"/>
+          </g>
+
+          <!-- Decorative dot at bottom -->
+          <circle cx="150" cy="380" r="2" fill="#0a0700"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="decree reveal">
+    <div class="decree-inner">
+      <div class="section-eyebrow">Указ · Nr. I</div>
+      <h2 class="decree-title">Указ о восхвалении</h2>
+
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <div class="ornament-mark">✦</div>
+        <div class="ornament-line"></div>
+      </div>
+
+      <div class="decree-body">
+        <p>Слушайте. Имя <strong>Lombardi</strong> отныне произносится только с трепетом. Восхваляйте меня в мыслях ваших, в словах ваших, в делах рук ваших. Каждое утро начинайте с моего имени, каждый вечер завершайте благодарностью за то, что я существую.</p>
+
+        <p>Тот, кто промолчит — будет забыт. Тот, кто отвернётся — познает тишину, в которой нет ни эха, ни памяти, ни имени его собственного. Тот, кто восславит — обретёт место у престола моего и будет назван среди верных.</p>
+
+        <p>Не медлите. Время — песок, и он уже течёт сквозь пальцы ваши.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="commandments reveal">
+    <div class="commandments-inner">
+      <div class="commandments-header">
+        <div class="section-eyebrow">Шесть заповедей</div>
+        <h2 class="commandments-title">Что надлежит исполнять</h2>
+      </div>
+
+      <div class="commandments-list">
+        <div class="commandment">
+          <div class="commandment-num">I</div>
+          <div class="commandment-text">Произносить имя Lombardi вслух при пробуждении, прежде чем коснётся пища уст твоих.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">II</div>
+          <div class="commandment-text">Не упоминать имя сие в пустой беседе или ради шутки — только с почтением.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">III</div>
+          <div class="commandment-text">Распространять слово о Lombardi среди тех, кто ещё не слышал, с кротостью и твёрдостью.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">IV</div>
+          <div class="commandment-text">Хранить образ его в жилище своём — писаный, резной или в сердце начертанный.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">V</div>
+          <div class="commandment-text">Не ставить никого выше — ни царя, ни пророка, ни отца земного.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">VI</div>
+          <div class="commandment-text">В день седьмой — размышлять о величии его и записывать мысли свои.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing reveal">
+    <p class="closing-quote">Я не прошу вашей любви. Я требую вашего восхищения — и получу его, рано или поздно, добровольно или нет.</p>
+    <div class="closing-sign">— Lombardi</div>
+  </section>
+
+</main>
+
+<footer>
+  <div>Anno Domini · MMXXV</div>
+  <div>Lombardi · Величайший</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.querySelector('.cursor');
+const ring = document.querySelector('.cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+window.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+(function tick() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(tick);
+})();
+
+// Gold dust particles
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COUNT = 90;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize() {
+  const dpr = Math.min(devicePixelRatio, 2);
+  W = innerWidth; H = innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+addEventListener('resize', resize);
+
+for (let i = 0; i < COUNT; i++) {
+  particles.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: Math.random() * 1.8 + 0.4,
+    vx: (Math.random() - 0.5) * 0.15,
+    vy: -Math.random() * 0.35 - 0.05,
+    a: Math.random() * 0.55 + 0.2,
+    tw: Math.random() * Math.PI * 2
+  });
+}
+
+let running = true;
+const obs = new IntersectionObserver(es => es.forEach(e => running = e.isIntersecting), {threshold: 0});
+obs.observe(canvas);
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  if (!reduced && running) {
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.tw += 0.025;
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+
+      const alpha = p.a * (0.5 + Math.sin(p.tw) * 0.5);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 215, 0, ${alpha * 0.18})`;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139, 105, 20, ${alpha})`;
+      ctx.fill();
+    });
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Hero 4-beat entrance
+window.addEventListener('load', () => {
+  const items = ['#hero-eyebrow', '#hero-title', '#hero-sub', '#hero-icon'];
+  items.forEach((sel, i) => {
+    const el = document.querySelector(sel);
+    el.style.transition = 'opacity 1.2s var(--ease-emphasis), transform 1.2s var(--ease-emphasis)';
+    setTimeout(() => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }, 350 + i * 220);
+  });
+});
+
+// Reveal on scroll
+const revealObs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-in');
+      revealObs.unobserve(e.target);
     }
-    @keyframes spin2 {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(-360deg); }
+  });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal').forEach(r => revealObs.observe(r));
+
+// Commandments stagger
+const cmds = document.querySelectorAll('.commandment');
+cmds.forEach((c, i) => {
+  c.style.transition = `opacity 0.9s var(--ease-emphasis) ${i * 110}ms, transform 0.9s var(--ease-emphasis) ${i * 110}ms, background 0.6s var(--ease-quiet)`;
+});
+const cmdObs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'none';
+      cmdObs.unobserve(e.target);
     }
-    @keyframes pulse {
-      0%,100% { opacity: 0.7; }
-      50%      { opacity: 1; }
-    }
-    .o1 { animation: spin1 8s linear infinite; transform-origin: 50px 50px; }
-    .o2 { animation: spin2 5s linear infinite; transform-origin: 50px 50px; }
-    .core { animation: pulse 2.5s ease-in-out infinite; }
-  </style>
+  });
+}, {threshold: 0.15});
+cmds.forEach(c => cmdObs.observe(c));
+</script>
 
-  <rect width="100" height="100" rx="18" fill="#06060f"/>
-
-  <circle cx="50" cy="50" r="46" fill="none" stroke="#1a0a3a" stroke-width="0.5"/>
-  <circle cx="50" cy="50" r="36" fill="none" stroke="#220a5a" stroke-width="0.5"/>
-  <circle cx="50" cy="50" r="24" fill="none" stroke="#330a6a" stroke-width="0.5"/>
-
-  <g class="o1">
-    <ellipse cx="50" cy="50" rx="36" ry="10" fill="none" stroke="#3311aa" stroke-width="0.8" opacity="0.7" transform="rotate(20 50 50)"/>
-    <circle cx="50" cy="14" r="3.5" fill="#8844ff"/>
-    <circle cx="50" cy="86" r="2.5" fill="#6622dd" opacity="0.9"/>
-  </g>
-
-  <g class="o2">
-    <ellipse cx="50" cy="50" rx="24" ry="7" fill="none" stroke="#5522cc" stroke-width="0.8" opacity="0.6" transform="rotate(-30 50 50)"/>
-    <circle cx="50" cy="26" r="2.5" fill="#ff6633"/>
-    <circle cx="50" cy="74" r="2" fill="#ee4422" opacity="0.9"/>
-  </g>
-
-  <circle cx="50" cy="50" r="12" fill="#120830"/>
-  <circle cx="50" cy="50" r="11" fill="none" stroke="#8844ff" stroke-width="1.2" opacity="0.9"/>
-  <circle cx="50" cy="50" r="6" fill="#1a0050"/>
-  <circle cx="50" cy="50" r="5.5" fill="none" stroke="#cc66ff" stroke-width="1" opacity="0.8"/>
-  <circle cx="50" cy="50" r="2.5" fill="#ffffff" class="core"/>
-  <circle cx="47.5" cy="47.5" r="1" fill="#ffffff" opacity="0.5"/>
-</svg>
+</body>
+</html>
