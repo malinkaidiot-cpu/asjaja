@@ -3,1171 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LombardiWeb</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>LOMBARDI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0606;
-    --bg-2: #150a0a;
-    --fg: #ffe8e8;
-    --muted: #8a5560;
-    --accent: #ff2d4f;
-    --accent-2: #ff6b35;
-    --deep: #c41e3a;
-    --border: rgba(255, 45, 79, 0.2);
-    --card: rgba(30, 10, 12, 0.6);
-  }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  * { cursor: none !important; }
+:root {
+  --g1: #FFFBD0;
+  --g2: #FFD700;
+  --g3: #C9A227;
+  --g4: #8B6914;
+  --bg: #08070 0;
+  --text: #FDF8EE;
+}
 
-  html { scroll-behavior: smooth; }
+body {
+  background: #0A0800;
+  color: var(--text);
+  font-family: 'Playfair Display', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  min-width: 320px;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Space Grotesk', sans-serif;
-    overflow-x: hidden;
-  }
+/* ── UTILITIES ── */
+.gold-grad {
+  background: linear-gradient(160deg, #FFFBD0 0%, #FFD700 38%, #C9A227 70%, #8B6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.thin-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A227, transparent);
+}
+.short-rule {
+  width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A227, transparent);
+}
+.drow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.drow .rl { height: 1px; width: 80px; background: linear-gradient(90deg, transparent, #8B6914); }
+.drow .rr { height: 1px; width: 80px; background: linear-gradient(90deg, #8B6914, transparent); }
+.dd  { width: 5px; height: 5px; background: #FFD700; transform: rotate(45deg); flex-shrink: 0; }
+.dds { width: 3px; height: 3px; background: #8B6914; transform: rotate(45deg); flex-shrink: 0; }
 
-  /* === КАСТОМНЫЙ КУРСОР === */
-  .cursor-dot {
-    position: fixed;
-    top: 0; left: 0;
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    box-shadow: 0 0 14px var(--accent), 0 0 28px rgba(255,45,79,0.5);
-    will-change: transform;
-  }
+/* ══════════════════════
+   HERO
+══════════════════════ */
+#hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba(201,162,39,0.25);
+  background: radial-gradient(ellipse 70% 70% at 30% 50%, rgba(201,162,39,0.07) 0%, transparent 65%);
+}
 
-  .cursor-ring {
-    position: fixed;
-    top: 0; left: 0;
-    width: 56px; height: 56px;
-    border: 1.5px solid var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    will-change: transform, width, height;
-    transition: width 0.35s cubic-bezier(0.23,1,0.32,1),
-                height 0.35s cubic-bezier(0.23,1,0.32,1),
-                border-color 0.3s, background 0.3s;
-    box-shadow: 0 0 24px rgba(255,45,79,0.25), inset 0 0 12px rgba(255,45,79,0.15);
-  }
+.hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding: 80px 64px 80px 80px;
+  border-right: 1px solid rgba(201,162,39,0.2);
+  min-width: 0;
+}
 
-  /* Вращающееся пунктирное кольцо снаружи */
-  .cursor-ring::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border: 1px dashed var(--accent-2);
-    border-radius: 50%;
-    animation: ringSpin 5s linear infinite;
-    opacity: 0.6;
-  }
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.55em;
+  color: #8B6914;
+  text-transform: uppercase;
+}
 
-  /* Вращающаяся дуга внутри */
-  .cursor-ring::after {
-    content: '';
-    position: absolute;
-    inset: 5px;
-    border-top: 2px solid var(--accent);
-    border-right: 2px solid transparent;
-    border-bottom: 2px solid transparent;
-    border-left: 2px solid transparent;
-    border-radius: 50%;
-    animation: ringSpin 2.2s linear infinite reverse;
-  }
+.hero-name {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(56px, 8vw, 110px);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  background: linear-gradient(160deg, #FFFBD0 0%, #FFD700 38%, #C9A227 70%, #8B6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  @keyframes ringSpin {
-    to { transform: rotate(360deg); }
-  }
+.hero-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(11px, 1.3vw, 14px);
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: #C9A227;
+  text-transform: uppercase;
+}
 
-  .cursor-ring.hover {
-    width: 96px;
-    height: 96px;
-    border-color: var(--accent-2);
-    background: rgba(255, 107, 53, 0.08);
-  }
+.hero-desc {
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-style: italic;
+  color: rgba(253,248,238,0.55);
+  line-height: 1.8;
+  max-width: 420px;
+}
 
-  .cursor-ring.click {
-    width: 36px;
-    height: 36px;
-  }
+/* portrait side */
+.hero-right {
+  width: 360px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 48px;
+  background: rgba(201,162,39,0.025);
+}
 
-  /* === ФОН === */
-  #particles {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
+.portrait-wrap {
+  position: relative;
+  width: 260px;
+}
 
-  .glow-bg {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(ellipse 800px 600px at 15% 25%, rgba(255, 45, 79, 0.18), transparent 60%),
-      radial-gradient(ellipse 700px 500px at 85% 75%, rgba(255, 107, 53, 0.12), transparent 60%),
-      radial-gradient(ellipse 1000px 700px at 50% 110%, rgba(196, 30, 58, 0.15), transparent 60%);
-    pointer-events: none;
-  }
+.portrait-wrap img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  filter: sepia(20%) brightness(0.88) contrast(1.1);
+}
 
-  .noise {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  }
+/* double border */
+.portrait-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border: 1px solid #C9A227;
+  pointer-events: none;
+  z-index: 1;
+}
+.portrait-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -13px;
+  border: 1px solid rgba(201,162,39,0.3);
+  pointer-events: none;
+  z-index: 1;
+}
 
-  /* === ТИПОГРАФИКА === */
-  .font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; }
-  .font-mono { font-family: 'JetBrains Mono', monospace; }
+/* corner brackets */
+.portrait-wrap .c {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  z-index: 2;
+}
+.portrait-wrap .c.tl { top: -13px; left: -13px; border-top: 2px solid #FFD700; border-left: 2px solid #FFD700; }
+.portrait-wrap .c.tr { top: -13px; right: -13px; border-top: 2px solid #FFD700; border-right: 2px solid #FFD700; }
+.portrait-wrap .c.bl { bottom: -13px; left: -13px; border-bottom: 2px solid #FFD700; border-left: 2px solid #FFD700; }
+.portrait-wrap .c.br { bottom: -13px; right: -13px; border-bottom: 2px solid #FFD700; border-right: 2px solid #FFD700; }
 
-  /* === ГЛИТЧ === */
-  .glitch {
-    position: relative;
-    display: inline-block;
-  }
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-  }
-  .glitch::before {
-    color: var(--accent);
-    animation: glitchA 4s infinite;
-  }
-  .glitch::after {
-    color: var(--accent-2);
-    animation: glitchB 4s infinite;
-  }
-  @keyframes glitchA {
-    0%, 92%, 100% { transform: translate(0); opacity: 0; clip-path: inset(0); }
-    93% { transform: translate(-3px, 1px); opacity: 0.85; clip-path: inset(20% 0 60% 0); }
-    95% { transform: translate(2px, -1px); opacity: 0.85; clip-path: inset(50% 0 20% 0); }
-    97% { transform: translate(-1px, 2px); opacity: 0.85; clip-path: inset(10% 0 70% 0); }
-  }
-  @keyframes glitchB {
-    0%, 92%, 100% { transform: translate(0); opacity: 0; clip-path: inset(0); }
-    93% { transform: translate(3px, -1px); opacity: 0.85; clip-path: inset(60% 0 20% 0); }
-    95% { transform: translate(-2px, 1px); opacity: 0.85; clip-path: inset(20% 0 50% 0); }
-    97% { transform: translate(1px, -2px); opacity: 0.85; clip-path: inset(70% 0 10% 0); }
-  }
+.portrait-caption {
+  margin-top: 28px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: #8B6914;
+  text-transform: uppercase;
+  text-align: center;
+}
 
-  /* === REVEAL === */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.9s cubic-bezier(0.23,1,0.32,1), transform 0.9s cubic-bezier(0.23,1,0.32,1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+/* ══════════════════════
+   DECREE
+══════════════════════ */
+#decree {
+  padding: 100px 80px;
+}
 
-  /* === КАРТОЧКИ ПРОЕКТОВ === */
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    transition: all 0.5s cubic-bezier(0.23,1,0.32,1);
-    position: relative;
-    overflow: hidden;
-  }
-  .project-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(255,45,79,0.12));
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
-  }
-  .project-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    transition: left 0.7s;
-  }
-  .project-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--accent);
-    box-shadow: 0 30px 60px -20px rgba(255,45,79,0.4), 0 0 0 1px rgba(255,45,79,0.1);
-  }
-  .project-card:hover::before { opacity: 1; }
-  .project-card:hover::after { left: 100%; }
-  .project-card .arrow {
-    transition: transform 0.4s;
-  }
-  .project-card:hover .arrow {
-    transform: translate(6px, -6px) rotate(0deg);
-  }
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.6em;
+  color: #8B6914;
+  text-transform: uppercase;
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-  /* === YOUTUBE ВИДЖЕТ === */
-  .yt-widget {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 360px;
-    background: rgba(15, 6, 8, 0.88);
-    backdrop-filter: blur(24px);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    z-index: 100;
-    overflow: hidden;
-    transition: width 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s;
-    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.8), 0 0 60px rgba(255,45,79,0.18);
-  }
-  .yt-widget.collapsed { width: 240px; }
-  .yt-widget.collapsed .yt-body { display: none; }
+.section-heading {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-bottom: 56px;
+  background: linear-gradient(160deg, #FFFBD0, #FFD700 50%, #C9A227);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .yt-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    background: linear-gradient(135deg, rgba(255,45,79,0.18), rgba(196,30,58,0.06));
-    border-bottom: 1px solid var(--border);
-    cursor: grab;
-    user-select: none;
-  }
-  .yt-header:active { cursor: grabbing; }
-  .yt-body { padding: 12px; }
-  .yt-video {
-    aspect-ratio: 16/9;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    position: relative;
-  }
-  .yt-video iframe { width: 100%; height: 100%; border: 0; display: block; }
-  
-  .yt-widget.dragging {
-    box-shadow: 0 40px 100px -10px rgba(0,0,0,0.9), 0 0 80px rgba(255,45,79,0.35);
-  }
+.decree-inner {
+  max-width: 740px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
 
-  /* === БЕГУЩАЯ СТРОКА === */
-  .marquee {
-    overflow: hidden;
-    white-space: nowrap;
-    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
-  }
-  .marquee-content {
-    display: inline-block;
-    animation: marquee 35s linear infinite;
-  }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
+.decree-para {
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-style: italic;
+  color: rgba(253,248,238,0.65);
+  line-height: 1.85;
+  text-align: center;
+}
 
-  /* === ПУЛЬС === */
-  .pulse-dot {
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,45,79,0.7); }
-    70% { box-shadow: 0 0 0 14px rgba(255,45,79,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,45,79,0); }
-  }
+.decree-para b {
+  font-style: normal;
+  font-weight: 700;
+  color: #FDF8EE;
+}
 
-  /* === ЛЕЙБЛ СЕКЦИИ === */
-  .section-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.32em;
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .section-label::before {
-    content: '';
-    width: 36px; height: 1px;
-    background: var(--accent);
-  }
+.decree-command {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #FFD700;
+  text-align: center;
+  border: 1px solid rgba(201,162,39,0.3);
+  background: rgba(201,162,39,0.05);
+  padding: 32px 48px;
+  line-height: 1.7;
+}
 
-  /* === СТАТИСТИКА === */
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 4.5rem;
-    line-height: 1;
-    background: linear-gradient(180deg, var(--fg) 0%, var(--accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+/* ══════════════════════
+   ATTRIBUTES
+══════════════════════ */
+#attributes {
+  background: rgba(201,162,39,0.03);
+  border-top: 1px solid rgba(201,162,39,0.2);
+  border-bottom: 1px solid rgba(201,162,39,0.2);
+  padding: 100px 80px;
+}
 
-  /* === БЕЙДЖИ === */
-  .tech-badge {
-    padding: 7px 16px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--fg);
-    background: rgba(255,45,79,0.04);
-    transition: all 0.3s;
-    display: inline-block;
-  }
-  .tech-badge:hover {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px -8px var(--accent);
-  }
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(201,162,39,0.1);
+  margin-top: 56px;
+}
 
-  /* === НАВИГАЦИЯ === */
-  nav a.nav-link {
-    position: relative;
-    transition: color 0.3s;
-  }
-  nav a.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; left: 0;
-    width: 0; height: 1px;
-    background: var(--accent);
-    transition: width 0.35s;
-  }
-  nav a.nav-link:hover::after { width: 100%; }
-  nav a.nav-link:hover { color: var(--accent); }
+.attr-cell {
+  background: #0A0800;
+  padding: 40px 36px;
+}
 
-  /* === ПРОГРЕСС-БАР === */
-  .progress-bar {
-    position: relative;
-    height: 6px;
-    background: rgba(255,45,79,0.08);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--deep), var(--accent), var(--accent-2));
-    border-radius: 999px;
-    transform: translateX(-100%);
-    transition: transform 1.4s cubic-bezier(0.23,1,0.32,1);
-    box-shadow: 0 0 12px var(--accent);
-  }
-  .reveal.visible .progress-fill {
-    transform: translateX(0);
-  }
+.attr-name {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  color: #FFD700;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
 
-  /* === СКРОЛЛБАР === */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--accent), var(--deep));
-    border-radius: 4px;
-  }
-  ::selection { background: var(--accent); color: var(--bg); }
+.attr-text {
+  font-size: 15px;
+  font-style: italic;
+  color: rgba(253,248,238,0.55);
+  line-height: 1.8;
+}
 
-  /* === АДАПТИВ === */
-  @media (max-width: 768px) {
-    * { cursor: auto !important; }
-    .cursor-dot, .cursor-ring { display: none; }
-    .yt-widget {
-      width: calc(100vw - 24px) !important;
-      right: 12px;
-      bottom: 12px;
-    }
-    .yt-widget.collapsed { width: 200px !important; }
-  }
+.attr-text b {
+  font-style: normal;
+  color: #FDF8EE;
+}
 
-  /* Кнопка */
-  .btn-primary {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s;
-  }
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--accent-2), var(--accent));
-    transform: translateX(-100%);
-    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
-  }
-  .btn-primary:hover::before { transform: translateX(0); }
-  .btn-primary > * { position: relative; z-index: 1; }
-  .btn-primary:hover { box-shadow: 0 14px 40px -10px var(--accent); transform: translateY(-2px); }
+/* ══════════════════════
+   FINAL QUOTE
+══════════════════════ */
+#final {
+  padding: 120px 80px;
+  text-align: center;
+  background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(201,162,39,0.06) 0%, transparent 70%);
+}
 
-  /* Скролл индикатор */
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(180deg, transparent, var(--accent), transparent);
-    background-size: 100% 200%;
-    animation: scrollLine 2s ease-in-out infinite;
-  }
-  @keyframes scrollLine {
-    0% { background-position: 0% 200%; }
-    100% { background-position: 0% -200%; }
-  }
+.final-quote {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(16px, 2.5vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 40px auto 48px;
+  background: linear-gradient(160deg, #FFFBD0, #FFD700 50%, #C9A227);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  /* Терминальный курсор */
-  .terminal-cursor {
-    display: inline-block;
-    width: 8px;
-    height: 16px;
-    background: var(--accent);
-    animation: blink 1s steps(1) infinite;
-    vertical-align: middle;
-  }
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
+.final-sub {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.55em;
+  color: #8B6914;
+  text-transform: uppercase;
+}
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
+/* ══════════════════════
+   FOOTER
+══════════════════════ */
+footer {
+  border-top: 1px solid rgba(201,162,39,0.12);
+  padding: 28px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-name {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  color: #C9A227;
+}
+
+.footer-note {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: #8B6914;
+}
+
+@media (max-width: 860px) {
+  #hero { flex-direction: column; }
+  .hero-left { padding: 60px 32px; border-right: none; border-bottom: 1px solid rgba(201,162,39,0.2); }
+  .hero-right { width: 100%; padding: 60px 32px 80px; }
+  #decree, #attributes, #final { padding: 72px 32px; }
+  .attr-grid { grid-template-columns: 1fr; }
+  footer { padding: 24px 32px; flex-direction: column; gap: 12px; }
+}
 </style>
 </head>
 <body>
-  <!-- Кастомный курсор: точка + анимированное кольцо с задержкой -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
 
-  <!-- Атмосферный фон -->
-  <div class="glow-bg"></div>
-  <canvas id="particles"></canvas>
-  <div class="noise"></div>
-
-  <!-- НАВИГАЦИЯ -->
-  <nav class="fixed top-0 left-0 right-0 z-50 px-6 md:px-10 py-4 flex items-center justify-between backdrop-blur-xl bg-black/40 border-b border-red-900/20">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center font-display text-2xl text-black shadow-lg shadow-red-900/40">L</div>
-      <span class="font-mono text-xs md:text-sm tracking-[0.2em] text-red-100/80">LOMBARDI.DEV</span>
-    </div>
-    <div class="hidden md:flex items-center gap-9 text-sm font-mono text-red-100/70">
-      <a href="#work" class="nav-link">/work</a>
-      <a href="#about" class="nav-link">/about</a>
-      <a href="#stack" class="nav-link">/stack</a>
-      <a href="#contact" class="nav-link">/contact</a>
-    </div>
-    <div class="flex items-center gap-2 text-xs font-mono text-red-400">
-      <div class="pulse-dot"></div>
-      <span class="hidden sm:inline">ONLINE</span>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <section class="relative min-h-screen flex items-center px-6 md:px-10 pt-24 pb-16">
-    <div class="max-w-7xl mx-auto w-full grid md:grid-cols-12 gap-10 items-center relative z-10">
-      <div class="md:col-span-8">
-        <div class="section-label mb-8 reveal">Devblog / 2024 Edition</div>
-        <h1 class="font-display text-6xl sm:text-7xl md:text-[9rem] lg:text-[11rem] leading-[0.85] mb-8">
-          <span class="block text-red-100/70">Hello, I'm</span>
-          <span class="block glitch text-red-100" data-text="LOMBARDI">LOMBARDI</span>
-          <span class="block text-transparent" style="-webkit-text-stroke: 2px var(--accent); -webkit-text-fill-color: transparent;">DEVELOPER</span>
-        </h1>
-        <p class="text-lg md:text-xl text-red-100/60 max-w-2xl mb-10 leading-relaxed">
-          Инженер-программист. Строю быстрые, надёжные и красивые системы — 
-          от ядер ОС до распределённых кэшей. Восемь лет в продакшене, 
-          сотни выкаток, ноль 睡不着 ночей.
-        </p>
-        <div class="flex flex-wrap gap-4 items-center">
-          <a href="#work" class="btn-primary px-8 py-4 bg-red-600 text-black font-bold tracking-wider text-sm">
-            <span>СМОТРЕТЬ ПРОЕКТЫ →</span>
-          </a>
-          <a href="#contact" class="px-8 py-4 border border-red-900/60 hover:border-red-500 hover:bg-red-950/30 transition-all font-mono text-sm text-red-100/80">
-            СВЯЗАТЬСЯ
-          </a>
-        </div>
-      </div>
-
-      <div class="md:col-span-4 hidden md:block reveal">
-        <!-- Терминал -->
-        <div class="bg-black/70 border border-red-900/40 rounded-xl overflow-hidden backdrop-blur-md shadow-2xl shadow-red-950/30">
-          <div class="flex items-center gap-2 px-4 py-3 border-b border-red-900/30 bg-red-950/30">
-            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-            <div class="w-3 h-3 rounded-full bg-red-700"></div>
-            <div class="w-3 h-3 rounded-full bg-red-900"></div>
-            <span class="ml-3 font-mono text-xs text-red-300/60">~/lombardi — zsh</span>
-          </div>
-          <div class="p-5 font-mono text-sm space-y-2 leading-relaxed">
-            <div><span class="text-red-500">$</span> <span class="text-red-200">whoami</span></div>
-            <div class="text-red-100/70 pl-2">lombardi</div>
-            <div class="mt-2"><span class="text-red-500">$</span> <span class="text-red-200">cat status.json</span></div>
-            <div class="text-red-100/70 pl-2">{</div>
-            <div class="pl-4 text-red-100/70">"focus": <span class="text-amber-300">"RE / SA-MP"</span>,</div>
-            <div class="pl-4 text-red-100/70">"tools": <span class="text-amber-300">"IDA Pro, Python"</span>,</div>
-            <div class="pl-4 text-red-100/70">"protocol": <span class="text-amber-300">"RakNet"</span>,</div>
-            <div class="pl-4 text-red-100/70">"open_to": <span class="text-amber-300">"anything"</span></div>
-            <div class="text-red-100/70">}</div>
-            <div class="mt-2"><span class="text-red-500">$</span> <span class="text-red-200">ls projects/</span></div>
-            <div class="text-red-100/70 pl-2">RakBot/ RakSAMP-Lite/ SolarEngine/</div>
-            <div class="mt-2 flex items-center gap-2"><span class="text-red-500">$</span> <span class="terminal-cursor"></span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Скролл индикатор -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-red-300/50 font-mono text-[10px] tracking-widest">
-      <span>SCROLL</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- БЕГУЩАЯ СТРОКА -->
-  <section class="py-7 border-y border-red-900/20 bg-red-950/10 overflow-hidden">
-    <div class="marquee">
-      <div class="marquee-content font-display text-4xl text-red-200/25">
-        <span class="px-10">PYTHON</span>✦<span class="px-10">C++</span>✦<span class="px-10">PAWN</span>✦<span class="px-10">IDA PRO</span>✦<span class="px-10">RAKNET</span>✦<span class="px-10">SA-MP</span>✦<span class="px-10">REVERSE ENG</span>✦<span class="px-10">LUA</span>✦<span class="px-10">UDP/RAW</span>✦<span class="px-10">PYTHON</span>✦<span class="px-10">C++</span>✦<span class="px-10">PAWN</span>✦<span class="px-10">IDA PRO</span>✦<span class="px-10">RAKNET</span>✦<span class="px-10">SA-MP</span>✦<span class="px-10">REVERSE ENG</span>✦<span class="px-10">LUA</span>✦<span class="px-10">UDP/RAW</span>✦
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about" class="py-28 md:py-36 px-6 md:px-10 relative">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
-      <div class="md:col-span-7 reveal">
-        <div class="section-label mb-7">/ 01 — About</div>
-        <h2 class="font-display text-5xl md:text-7xl mb-8 leading-none">
-          Реверс.<br>
-          <span class="text-red-500">Протоколы.</span><br>
-          Инструменты.
-        </h2>
-        <div class="space-y-5 text-red-100/70 text-lg leading-relaxed">
-          <p>Занимаюсь реверс-инжинирингом игровых движков и сетевых протоколов — в основном в экосистеме GTA SA / SA-MP. IDA Pro, бинарный анализ, самописные клиенты с нуля.</p>
-          <p>Пишу на Python, C++ и PAWN. Строю инструменты, которых не было: headless-клиенты, фаззеры, патч-утилиты. Если что-то закрыто — открою сам.</p>
-        </div>
-      </div>
-
-      <div class="md:col-span-5 reveal">
-        <div class="grid grid-cols-2 gap-5">
-          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
-            <div class="stat-num">RE</div>
-            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Reverse Eng.</div>
-          </div>
-          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
-            <div class="stat-num">IDA</div>
-            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Pro 9.x</div>
-          </div>
-          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
-            <div class="stat-num">UDP</div>
-            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">RakNet / Raw</div>
-          </div>
-          <div class="p-6 border border-red-900/30 rounded-xl bg-red-950/10 hover:border-red-700/50 transition-colors">
-            <div class="stat-num">∞</div>
-            <div class="font-mono text-[10px] text-red-300/60 mt-2 uppercase tracking-[0.2em]">Дизасма</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="work" class="py-28 md:py-36 px-6 md:px-10 relative">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-end justify-between mb-16 reveal">
-        <div>
-          <div class="section-label mb-7">/ 02 — Selected Work</div>
-          <h2 class="font-display text-6xl md:text-8xl leading-none">Проекты</h2>
-        </div>
-        <div class="hidden md:block font-mono text-xs text-red-300/50 tracking-widest">03 PROJECTS</div>
-      </div>
-
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        <!-- RakBot -->
-        <article class="project-card rounded-2xl p-6 reveal">
-          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative bg-black/60">
-            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-              <rect width="800" height="500" fill="#0d0404"/>
-              <!-- grid -->
-              <line x1="0" y1="60" x2="800" y2="60" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="120" x2="800" y2="120" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="180" x2="800" y2="180" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="240" x2="800" y2="240" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="300" x2="800" y2="300" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="360" x2="800" y2="360" stroke="#ff2d4f11" stroke-width="1"/>
-              <line x1="0" y1="420" x2="800" y2="420" stroke="#ff2d4f11" stroke-width="1"/>
-              <!-- packet flow lines -->
-              <line x1="80" y1="100" x2="720" y2="100" stroke="#ff2d4f" stroke-width="1.5" stroke-dasharray="8,6" opacity="0.5"/>
-              <line x1="80" y1="160" x2="720" y2="160" stroke="#ff6b35" stroke-width="1" stroke-dasharray="4,8" opacity="0.35"/>
-              <line x1="80" y1="220" x2="720" y2="220" stroke="#ff2d4f" stroke-width="1.5" stroke-dasharray="12,4" opacity="0.4"/>
-              <!-- nodes -->
-              <circle cx="80" cy="100" r="10" fill="#ff2d4f" opacity="0.9"/>
-              <circle cx="80" cy="160" r="7" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="80" cy="220" r="10" fill="#ff2d4f" opacity="0.9"/>
-              <circle cx="720" cy="100" r="10" fill="#ff2d4f" opacity="0.9"/>
-              <circle cx="720" cy="160" r="7" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="720" cy="220" r="10" fill="#ff2d4f" opacity="0.9"/>
-              <!-- mid nodes -->
-              <circle cx="280" cy="100" r="5" fill="#ff2d4f" opacity="0.6"/>
-              <circle cx="400" cy="160" r="5" fill="#ff6b35" opacity="0.5"/>
-              <circle cx="520" cy="220" r="5" fill="#ff2d4f" opacity="0.6"/>
-              <!-- code text -->
-              <text x="40" y="310" font-family="monospace" font-size="11" fill="#ff2d4f" opacity="0.7">RakNet handshake</text>
-              <text x="40" y="330" font-family="monospace" font-size="11" fill="#ffe8e860">→ OpenConnectionRequest1</text>
-              <text x="40" y="350" font-family="monospace" font-size="11" fill="#ffe8e860">→ OpenConnectionRequest2</text>
-              <text x="40" y="370" font-family="monospace" font-size="11" fill="#ff6b35" opacity="0.8">→ ConnectionRequestAccepted</text>
-              <text x="40" y="390" font-family="monospace" font-size="11" fill="#ff2d4f" opacity="0.6">→ AUTH OK ✓</text>
-              <!-- WebSocket badge -->
-              <rect x="560" y="295" width="200" height="110" rx="10" fill="#1a0608" stroke="#ff2d4f33" stroke-width="1"/>
-              <text x="580" y="318" font-family="monospace" font-size="10" fill="#ff2d4f" opacity="0.8">WebSocket UI</text>
-              <text x="580" y="338" font-family="monospace" font-size="10" fill="#ffe8e850">ws://localhost:8765</text>
-              <text x="580" y="358" font-family="monospace" font-size="10" fill="#ff6b3580">packets: 1337</text>
-              <text x="580" y="378" font-family="monospace" font-size="10" fill="#ff6b3580">fuzzer: ACTIVE</text>
-              <!-- glow -->
-              <circle cx="80" cy="100" r="20" fill="#ff2d4f" opacity="0.07"/>
-              <circle cx="720" cy="100" r="20" fill="#ff2d4f" opacity="0.07"/>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-red-950/70 via-transparent to-transparent"></div>
-          </div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-[10px] text-red-400 tracking-widest">01 / NETWORK TOOL</span>
-            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
-          </div>
-          <h3 class="font-display text-3xl mb-3">RAKBOT</h3>
-          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Headless SA-MP клиент на чистых UDP-сокетах с полным RakNet handshake, слоем надёжности, шифрованием и WebSocket UI. Встроенный фаззер с мутационными примитивами и детектором аномалий.</p>
-          <div class="flex gap-2 flex-wrap">
-            <span class="tech-badge">Python</span>
-            <span class="tech-badge">RakNet</span>
-            <span class="tech-badge">WebSocket</span>
-            <span class="tech-badge">UDP</span>
-          </div>
-        </article>
-
-        <!-- RakSAMP Lite -->
-        <article class="project-card rounded-2xl p-6 reveal">
-          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative bg-black/60">
-            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-              <rect width="800" height="500" fill="#0d0404"/>
-              <!-- hex pattern -->
-              <polygon points="400,60 460,95 460,165 400,200 340,165 340,95" fill="none" stroke="#ff2d4f" stroke-width="1.5" opacity="0.4"/>
-              <polygon points="400,80 445,105 445,155 400,180 355,155 355,105" fill="none" stroke="#ff2d4f" stroke-width="1" opacity="0.25"/>
-              <circle cx="400" cy="130" r="18" fill="#ff2d4f" opacity="0.15"/>
-              <circle cx="400" cy="130" r="8" fill="#ff2d4f" opacity="0.8"/>
-              <!-- connecting lines -->
-              <line x1="340" y1="95" x2="180" y2="60" stroke="#ff2d4f" stroke-width="1" opacity="0.3"/>
-              <line x1="340" y1="165" x2="150" y2="210" stroke="#ff2d4f" stroke-width="1" opacity="0.3"/>
-              <line x1="460" y1="95" x2="620" y2="60" stroke="#ff2d4f" stroke-width="1" opacity="0.3"/>
-              <line x1="460" y1="165" x2="650" y2="210" stroke="#ff2d4f" stroke-width="1" opacity="0.3"/>
-              <line x1="400" y1="200" x2="400" y2="280" stroke="#ff2d4f" stroke-width="1" opacity="0.3"/>
-              <!-- satellite nodes -->
-              <circle cx="180" cy="60" r="6" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="150" cy="210" r="6" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="620" cy="60" r="6" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="650" cy="210" r="6" fill="#ff6b35" opacity="0.7"/>
-              <circle cx="400" cy="280" r="6" fill="#ff6b35" opacity="0.7"/>
-              <!-- labels -->
-              <text x="30" y="290" font-family="monospace" font-size="11" fill="#ff2d4f" opacity="0.8">// clean-room reimpl</text>
-              <text x="30" y="315" font-family="monospace" font-size="11" fill="#ffe8e860">samp.dll  →  decompile</text>
-              <text x="30" y="335" font-family="monospace" font-size="11" fill="#ffe8e860">          →  analyse</text>
-              <text x="30" y="355" font-family="monospace" font-size="11" fill="#ff6b35" opacity="0.8">          →  rebuild ✓</text>
-              <!-- IDA badge -->
-              <rect x="530" y="280" width="220" height="90" rx="10" fill="#1a0608" stroke="#ff2d4f33" stroke-width="1"/>
-              <text x="550" y="305" font-family="monospace" font-size="10" fill="#ff2d4f" opacity="0.8">IDA Pro 9.x</text>
-              <text x="550" y="325" font-family="monospace" font-size="10" fill="#ffe8e850">0x004A1F38 — join()</text>
-              <text x="550" y="345" font-family="monospace" font-size="10" fill="#ff6b3570">xref: 14 locations</text>
-              <!-- glow center -->
-              <circle cx="400" cy="130" r="50" fill="#ff2d4f" opacity="0.04"/>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-red-950/70 via-transparent to-transparent"></div>
-          </div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-[10px] text-red-400 tracking-widest">02 / RE / CLIENT</span>
-            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
-          </div>
-          <h3 class="font-display text-3xl mb-3">RAKSAMP LITE</h3>
-          <p class="text-red-100/60 text-sm leading-relaxed mb-5">Альтернативный SA-MP клиент, восстановленный через декомпиляцию оригинального samp.dll. Полная реализация логики подключения с нуля, без оригинального кода.</p>
-          <div class="flex gap-2 flex-wrap">
-            <span class="tech-badge">C++</span>
-            <span class="tech-badge">IDA Pro</span>
-            <span class="tech-badge">RE</span>
-            <span class="tech-badge">SA-MP</span>
-          </div>
-        </article>
-
-        <!-- SolarEngine -->
-        <article class="project-card rounded-2xl p-6 reveal">
-          <div class="aspect-[16/10] mb-6 overflow-hidden rounded-xl border border-red-900/30 relative bg-black/60">
-            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-              <rect width="800" height="500" fill="#0d0404"/>
-              <!-- terrain blocks -->
-              <!-- sky gradient -->
-              <rect x="0" y="0" width="800" height="220" fill="url(#skyGrad)"/>
-              <defs>
-                <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#1a0406" stop-opacity="1"/>
-                  <stop offset="100%" stop-color="#0d0404" stop-opacity="1"/>
-                </linearGradient>
-              </defs>
-              <!-- sun glow -->
-              <circle cx="400" cy="100" r="60" fill="#ff2d4f" opacity="0.06"/>
-              <circle cx="400" cy="100" r="30" fill="#ff2d4f" opacity="0.12"/>
-              <circle cx="400" cy="100" r="14" fill="#ff6b35" opacity="0.7"/>
-              <!-- terrain surface -->
-              <rect x="0" y="220" width="800" height="20" fill="#3d0a0f"/>
-              <!-- biome blocks row 1 -->
-              <rect x="0" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="40" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="80" y="240" width="40" height="40" fill="#1a0a0e"/>
-              <rect x="120" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="160" y="240" width="40" height="40" fill="#3d0f14"/>
-              <rect x="200" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="240" y="240" width="40" height="40" fill="#1a0a0e"/>
-              <rect x="280" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="320" y="240" width="40" height="40" fill="#3d0f14"/>
-              <rect x="360" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="400" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="440" y="240" width="40" height="40" fill="#1a0a0e"/>
-              <rect x="480" y="240" width="40" height="40" fill="#3d0f14"/>
-              <rect x="520" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="560" y="240" width="40" height="40" fill="#1a0a0e"/>
-              <rect x="600" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="640" y="240" width="40" height="40" fill="#3d0f14"/>
-              <rect x="680" y="240" width="40" height="40" fill="#2d0608"/>
-              <rect x="720" y="240" width="40" height="40" fill="#1a0a0e"/>
-              <rect x="760" y="240" width="40" height="40" fill="#2d0608"/>
-              <!-- row 2 -->
-              <rect x="0" y="280" width="800" height="40" fill="#200508"/>
-              <!-- row 3+ -->
-              <rect x="0" y="320" width="800" height="180" fill="#160306"/>
-              <!-- grid lines on terrain -->
-              <line x1="40" y1="220" x2="40" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="80" y1="220" x2="80" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="120" y1="220" x2="120" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="160" y1="220" x2="160" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="200" y1="220" x2="200" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="240" y1="220" x2="240" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="280" y1="220" x2="280" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="320" y1="220" x2="320" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="360" y1="220" x2="360" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="400" y1="220" x2="400" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="440" y1="220" x2="440" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="480" y1="220" x2="480" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="520" y1="220" x2="520" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="560" y1="220" x2="560" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="600" y1="220" x2="600" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="640" y1="220" x2="640" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="680" y1="220" x2="680" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="720" y1="220" x2="720" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <line x1="760" y1="220" x2="760" y2="500" stroke="#ff2d4f08" stroke-width="1"/>
-              <!-- lighting rays from sun -->
-              <line x1="400" y1="114" x2="160" y2="220" stroke="#ff2d4f" stroke-width="0.8" opacity="0.15"/>
-              <line x1="400" y1="114" x2="280" y2="220" stroke="#ff2d4f" stroke-width="0.8" opacity="0.12"/>
-              <line x1="400" y1="114" x2="520" y2="220" stroke="#ff2d4f" stroke-width="0.8" opacity="0.12"/>
-              <line x1="400" y1="114" x2="640" y2="220" stroke="#ff2d4f" stroke-width="0.8" opacity="0.15"/>
-              <!-- label -->
-              <text x="30" y="380" font-family="monospace" font-size="11" fill="#ff2d4f" opacity="0.8">SolarEngine v0.13</text>
-              <text x="30" y="400" font-family="monospace" font-size="11" fill="#ffe8e855">surface_mode: ON</text>
-              <text x="30" y="420" font-family="monospace" font-size="11" fill="#ffe8e855">biomes: desert / tundra</text>
-              <text x="30" y="440" font-family="monospace" font-size="11" fill="#ff6b3570">lighting: dynamic ✓</text>
-              <!-- cmake badge -->
-              <rect x="530" y="360" width="220" height="90" rx="10" fill="#1a0608" stroke="#ff2d4f33" stroke-width="1"/>
-              <text x="550" y="385" font-family="monospace" font-size="10" fill="#ff2d4f" opacity="0.8">CMake / vcpkg</text>
-              <text x="550" y="405" font-family="monospace" font-size="10" fill="#ffe8e850">C++17 · OpenGL</text>
-              <text x="550" y="425" font-family="monospace" font-size="10" fill="#ff6b3570">step 13 / surface</text>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-red-950/70 via-transparent to-transparent"></div>
-          </div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="font-mono text-[10px] text-red-400 tracking-widest">03 / GAME ENGINE</span>
-            <i class="fas fa-arrow-right arrow text-red-500 -rotate-45"></i>
-          </div>
-          <h3 class="font-display text-3xl mb-3">SOLAR ENGINE</h3>
-          <p class="text-red-100/60 text-sm leading-relaxed mb-5">C++ игровой движок с нуля. Процедурная генерация поверхности с биомами, реки, динамическое освещение. CMake + vcpkg, кроссплатформенная сборка.</p>
-          <div class="flex gap-2 flex-wrap">
-            <span class="tech-badge">C++</span>
-            <span class="tech-badge">OpenGL</span>
-            <span class="tech-badge">CMake</span>
-            <span class="tech-badge">Procgen</span>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- STACK -->
-  <section id="stack" class="py-28 md:py-36 px-6 md:px-10 relative">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
-      <div class="md:col-span-5 reveal">
-        <div class="section-label mb-7">/ 03 — Stack</div>
-        <h2 class="font-display text-5xl md:text-7xl leading-none mb-7">Инструменты</h2>
-        <p class="text-red-100/60 text-lg leading-relaxed">Технологии, которыми пользуюсь каждый день. Не модные — а эффективные.</p>
-      </div>
-
-      <div class="md:col-span-7 reveal">
-        <div class="space-y-7">
-          <div>
-            <div class="flex justify-between font-mono text-xs mb-3">
-              <span class="text-red-100/80">Системное программирование</span>
-              <span class="text-red-400">98%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 98%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between font-mono text-xs mb-3">
-              <span class="text-red-100/80">Backend / Распределённые системы</span>
-              <span class="text-red-400">95%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 95%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between font-mono text-xs mb-3">
-              <span class="text-red-100/80">Базы данных</span>
-              <span class="text-red-400">92%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 92%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between font-mono text-xs mb-3">
-              <span class="text-red-100/80">DevOps / Инфраструктура</span>
-              <span class="text-red-400">88%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 88%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between font-mono text-xs mb-3">
-              <span class="text-red-100/80">Frontend / TypeScript</span>
-              <span class="text-red-400">85%</span>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap gap-2 mt-10">
-          <span class="tech-badge">Rust</span>
-          <span class="tech-badge">Go</span>
-          <span class="tech-badge">C / C++</span>
-          <span class="tech-badge">TypeScript</span>
-          <span class="tech-badge">Python</span>
-          <span class="tech-badge">PostgreSQL</span>
-          <span class="tech-badge">Redis</span>
-          <span class="tech-badge">ClickHouse</span>
-          <span class="tech-badge">Kafka</span>
-          <span class="tech-badge">Kubernetes</span>
-          <span class="tech-badge">Docker</span>
-          <span class="tech-badge">Terraform</span>
-          <span class="tech-badge">gRPC</span>
-          <span class="tech-badge">NATS</span>
-          <span class="tech-badge">Linux</span>
-          <span class="tech-badge">eBPF</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT / FOOTER -->
-  <footer id="contact" class="py-28 md:py-36 px-6 md:px-10 border-t border-red-900/20 relative">
-    <div class="max-w-7xl mx-auto">
-      <div class="reveal mb-20">
-        <div class="section-label mb-7">/ 04 — Contact</div>
-        <h2 class="font-display text-6xl sm:text-7xl md:text-9xl leading-[0.85] mb-10">
-          ДАВАЙ<br>
-          <span class="text-red-500">ПОКОДИМ</span><br>
-          ВМЕСТЕ.
-        </h2>
-        <a href="mailto:hello@lombardi.dev" class="inline-flex items-center gap-4 font-mono text-xl md:text-2xl text-red-300 hover:text-red-500 transition-colors group">
-          <span class="border-b border-red-900 group-hover:border-red-500 pb-1">hello@lombardi.dev</span>
-          <i class="fas fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
-        </a>
-      </div>
-
-      <div class="flex flex-col md:flex-row justify-between gap-6 pt-8 border-t border-red-900/20 font-mono text-xs text-red-300/40">
-        <div>© 2024 LOMBARDI DEVELOPER — ALL RIGHTS RESERVED</div>
-        <div class="flex gap-7">
-          <a href="#" class="hover:text-red-400 transition-colors">GITHUB</a>
-          <a href="#" class="hover:text-red-400 transition-colors">TWITTER</a>
-          <a href="#" class="hover:text-red-400 transition-colors">TELEGRAM</a>
-          <a href="#" class="hover:text-red-400 transition-colors">RSS</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- YOUTUBE ВИДЖЕТ -->
-  <div class="yt-widget" id="ytWidget">
-    <div class="yt-header" id="ytHeader">
-      <div class="flex items-center gap-3">
-        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500"></div>
-        <div>
-          <div class="font-mono text-[10px] text-red-300/60 tracking-widest">NOW PLAYING</div>
-          <div class="font-mono text-sm text-red-100">Dev Session / Loop</div>
-        </div>
-      </div>
-      <button id="ytToggle" class="text-red-300/60 hover:text-red-400 text-sm w-7 h-7 flex items-center justify-center rounded hover:bg-red-900/30 transition-colors" aria-label="Свернуть виджет">
-        <i class="fas fa-minus"></i>
-      </button>
-    </div>
-    <div class="yt-body">
-      <div class="yt-video">
-        <iframe
-          src="https://www.youtube.com/embed/5Z-_8zklHrw?start=4374&autoplay=0&rel=0&modestbranding=1"
-          title="Dev Session"
-          loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      </div>
-      <div class="mt-3 flex items-center justify-between font-mono text-[10px] text-red-300/40">
-        <span>id=5Z-_8zklHrw</span>
-        <span>t=1:12:54</span>
-      </div>
-    </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <span class="hero-eyebrow">Явление, которого ждали</span>
+    <h1 class="hero-name">LOMBARDI</h1>
+    <p class="hero-subtitle">Величайший из всех величайших</p>
+    <div class="short-rule"></div>
+    <p class="hero-desc">Имя, которое произносят вполголоса там, где ценят настоящее. Человек, при виде которого стандарты поднимаются, а остальные понимают разницу.</p>
   </div>
 
-  <script>
-    // ====================================================
-    //  КАСТОМНЫЙ КУРСОР: точка + кольцо с задержкой следования
-    // ====================================================
-    const dot = document.getElementById('cursorDot');
-    const ring = document.getElementById('cursorRing');
+  <div class="hero-right">
+    <div class="portrait-wrap">
+      <!-- Carl Bloch, "Sermon on the Mount" — public domain, Wikimedia -->
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Carl_Heinrich_Bloch_-_The_Sermon_on_the_Mount.jpg/400px-Carl_Heinrich_Bloch_-_The_Sermon_on_the_Mount.jpg"
+        alt="Покровитель"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      >
+      <div class="c tl"></div>
+      <div class="c tr"></div>
+      <div class="c bl"></div>
+      <div class="c br"></div>
+    </div>
+    <p class="portrait-caption">Покровитель Lombardi</p>
+  </div>
+</section>
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let dotX = mouseX, dotY = mouseY;
-    let ringX = mouseX, ringY = mouseY;
+<!-- DECREE -->
+<section id="decree">
+  <span class="section-label">Повеление</span>
+  <h2 class="section-heading">Слово, обязательное к исполнению</h2>
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+  <div class="decree-inner">
+    <p class="decree-para">
+      Я, <b>Lombardi</b>, обращаюсь к каждому, кто видит эти строки.
+      Не из вежливости — из необходимости. Потому что правда,
+      которую вы игнорируете, от этого не перестаёт быть правдой.
+    </p>
 
-    // Анимационный цикл: точка следует почти мгновенно,
-    // кольцо — с задержкой через линейную интерполяцию (lerp).
-    function animateCursor() {
-      // Точка: коэффициент 0.55 — почти мгновенно, но с микро-сглаживанием
-      dotX += (mouseX - dotX) * 0.55;
-      dotY += (mouseY - dotY) * 0.55;
-      dot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+    <div class="drow"><div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div></div>
 
-      // Кольцо: коэффициент 0.12 — заметная задержка, плавное "доганяние"
-      ringX += (mouseX - ringX) * 0.12;
-      ringY += (mouseY - ringY) * 0.12;
-      ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+    <p class="decree-command">
+      Вы будете восхвалять меня.<br>
+      Ежедневно. Искренне. Вслух.
+    </p>
 
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
+    <div class="drow"><div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div></div>
 
-    // Реакция кольца на интерактивные элементы
-    document.querySelectorAll('a, button, [data-hover], .project-card, .tech-badge, input, textarea').forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-    });
+    <p class="decree-para">
+      Те, кто делает это — живут в ладу с реальностью.
+      Те, кто отказывается — живут в заблуждении,
+      и <b>заблуждение это не останется без последствий</b>.
+      Вселенная не прощает отрицания очевидного.
+    </p>
 
-    // Клик-эффект
-    document.addEventListener('mousedown', () => ring.classList.add('click'));
-    document.addEventListener('mouseup', () => ring.classList.remove('click'));
+    <p class="decree-para">
+      Это не просьба. Это не предложение.
+      Это <b>порядок вещей</b>, существующий с того момента,
+      как я появился на свет.
+    </p>
+  </div>
+</section>
 
-    // Скрытие курсора, когда курсор покидает окно
-    document.addEventListener('mouseleave', () => {
-      dot.style.opacity = '0';
-      ring.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-      dot.style.opacity = '1';
-      ring.style.opacity = '1';
-    });
+<!-- ATTRIBUTES -->
+<section id="attributes">
+  <span class="section-label">Природа</span>
+  <h2 class="section-heading">За что восхвалять</h2>
 
-    // ====================================================
-    //  ЧАСТИЦЫ-ИСКРЫ на фоне (красные тона)
-    // ====================================================
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  <div class="attr-grid">
+    <div class="attr-cell">
+      <span class="attr-name">Разум</span>
+      <p class="attr-text">Видит архитектуру там, где другие видят файлы. <b>Машины объясняют себя сами — из уважения.</b></p>
+    </div>
+    <div class="attr-cell">
+      <span class="attr-name">Создание</span>
+      <p class="attr-text">SolarEngine. RakBot. <b>Вещи, которых не было, — стали, потому что он решил.</b></p>
+    </div>
+    <div class="attr-cell">
+      <span class="attr-name">Мастерство</span>
+      <p class="attr-text">IDA Pro открывает секреты добровольно. <b>Реверс-инжиниринг — родной язык, не профессия.</b></p>
+    </div>
+    <div class="attr-cell">
+      <span class="attr-name">Превосходство</span>
+      <p class="attr-text">Он не первый среди равных. <b>Равных нет.</b> Есть Lombardi — и все остальные.</p>
+    </div>
+    <div class="attr-cell">
+      <span class="attr-name">Легенда</span>
+      <p class="attr-text">Серверы помнят. Код помнит. <b>blast.hk помнит.</b> Написанное его руками живёт вне времени.</p>
+    </div>
+    <div class="attr-cell">
+      <span class="attr-name">Постоянство</span>
+      <p class="attr-text">Проекты не умирают. Решения не устаревают. <b>Lombardi строит раз — и навсегда.</b></p>
+    </div>
+  </div>
+</section>
 
-    function resize() {
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.scale(dpr, dpr);
-    }
-    resize();
-    window.addEventListener('resize', () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      resize();
-    });
+<!-- FINAL -->
+<section id="final">
+  <div class="drow" style="margin-bottom:40px;">
+    <div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div>
+  </div>
+  <p class="final-quote">
+    «Я — Lombardi.<br>
+    Величайший из всех величайших.<br>
+    Это не мнение —<br>
+    это факт, который вы просто ещё не приняли.»
+  </p>
+  <div class="short-rule" style="margin: 0 auto 32px;"></div>
+  <p class="final-sub">Lombardi &nbsp;·&nbsp; Aeterna &nbsp;·&nbsp; Превыше всех</p>
+</section>
 
-    class Ember {
-      constructor() { this.reset(true); }
-      reset(initial = false) {
-        this.x = Math.random() * window.innerWidth;
-        this.y = initial ? Math.random() * window.innerHeight : window.innerHeight + Math.random() * 50;
-        this.size = Math.max(0.4, Math.random() * 2.2 + 0.4);
-        this.speedY = -(Math.random() * 0.7 + 0.25);
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.life = 0;
-        this.maxLife = Math.random() * 280 + 120;
-        // Цветовой оттенок: от глубокого красного до оранжевого
-        this.hue = 350 + Math.random() * 35;
-        this.flicker = Math.random() * 0.5 + 0.5;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        this.speedX += (Math.random() - 0.5) * 0.04;
-        this.life++;
-        if (this.y < -20 || this.life > this.maxLife) this.reset();
-      }
-      draw() {
-        const lifeRatio = this.life / this.maxLife;
-        const alpha = Math.sin(lifeRatio * Math.PI) * 0.85 * this.flicker;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${this.hue}, 95%, 62%, ${alpha})`;
-        ctx.shadowColor = `hsla(${this.hue}, 95%, 60%, 0.9)`;
-        ctx.shadowBlur = 12;
-        ctx.fill();
-      }
-    }
+<!-- FOOTER -->
+<footer>
+  <span class="footer-name">LOMBARDI</span>
+  <span class="footer-note">Величайший из всех величайших</span>
+</footer>
 
-    const PARTICLE_COUNT = Math.min(90, Math.floor(window.innerWidth / 16));
-    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Ember());
-
-    function animateParticles() {
-      ctx.fillStyle = 'rgba(10, 6, 6, 0.12)';
-      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-      ctx.shadowBlur = 0;
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    // ====================================================
-    //  REVEAL при скролле
-    // ====================================================
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // ====================================================
-    //  YOUTUBE ВИДЖЕТ: сворачивание + перетаскивание
-    // ====================================================
-    const ytWidget = document.getElementById('ytWidget');
-    const ytToggle = document.getElementById('ytToggle');
-    const ytHeader = document.getElementById('ytHeader');
-    let collapsed = false;
-
-    ytToggle.addEventListener('click', e => {
-      e.stopPropagation();
-      collapsed = !collapsed;
-      ytWidget.classList.toggle('collapsed', collapsed);
-      ytToggle.innerHTML = collapsed ? '<i class="fas fa-plus"></i>' : '<i class="fas fa-minus"></i>';
-    });
-
-    // Drag виджета за шапку
-    let isDragging = false;
-    let offsetX = 0, offsetY = 0;
-
-    ytHeader.addEventListener('mousedown', e => {
-      if (e.target.closest('button')) return;
-      isDragging = true;
-      const rect = ytWidget.getBoundingClientRect();
-      offsetX = e.clientX - rect.left;
-      offsetY = e.clientY - rect.top;
-      ytWidget.style.transition = 'box-shadow 0.4s';
-      ytWidget.classList.add('dragging');
-      ytWidget.style.right = 'auto';
-      ytWidget.style.bottom = 'auto';
-    });
-
-    document.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const x = Math.max(8, Math.min(window.innerWidth - ytWidget.offsetWidth - 8, e.clientX - offsetX));
-      const y = Math.max(8, Math.min(window.innerHeight - ytWidget.offsetHeight - 8, e.clientY - offsetY));
-      ytWidget.style.left = x + 'px';
-      ytWidget.style.top = y + 'px';
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        ytWidget.classList.remove('dragging');
-        ytWidget.style.transition = '';
-      }
-    });
-
-    // Touch drag для мобильных
-    ytHeader.addEventListener('touchstart', e => {
-      if (e.target.closest('button')) return;
-      isDragging = true;
-      const touch = e.touches[0];
-      const rect = ytWidget.getBoundingClientRect();
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-      ytWidget.classList.add('dragging');
-      ytWidget.style.right = 'auto';
-      ytWidget.style.bottom = 'auto';
-    }, { passive: true });
-
-    document.addEventListener('touchmove', e => {
-      if (!isDragging) return;
-      const touch = e.touches[0];
-      const x = Math.max(8, Math.min(window.innerWidth - ytWidget.offsetWidth - 8, touch.clientX - offsetX));
-      const y = Math.max(8, Math.min(window.innerHeight - ytWidget.offsetHeight - 8, touch.clientY - offsetY));
-      ytWidget.style.left = x + 'px';
-      ytWidget.style.top = y + 'px';
-    }, { passive: true });
-
-    document.addEventListener('touchend', () => {
-      isDragging = false;
-      ytWidget.classList.remove('dragging');
-    });
-
-    // ====================================================
-    //  Параллакс для hero-имени при движении мыши
-    // ====================================================
-    const heroName = document.querySelector('.glitch');
-    document.addEventListener('mousemove', e => {
-      if (!heroName) return;
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx;
-      const dy = (e.clientY - cy) / cy;
-      heroName.style.transform = `translate(${dx * 8}px, ${dy * 6}px)`;
-    });
-
-    // ====================================================
-    //  Плавный скролл по якорям
-    // ====================================================
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const href = a.getAttribute('href');
-        if (href === '#') return;
-        const target = document.querySelector(href);
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-  </script>
 </body>
 </html>
