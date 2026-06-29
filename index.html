@@ -3,482 +3,697 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOMBARDI</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<title>Lombardi — Величайший из всех величайших</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 :root {
-  --g1: #FFFBD0;
-  --g2: #FFD700;
-  --g3: #C9A227;
-  --g4: #8B6914;
-  --bg: #08070 0;
-  --text: #FDF8EE;
+  --gold-deep: #8B6914;
+  --gold: #D4AF37;
+  --gold-bright: #FFD700;
+  --gold-light: #FFF8DC;
+  --black: #0a0700;
+  --burgundy: #4a0e0e;
+  --ease-quiet: cubic-bezier(.22, 1, .36, 1);
+  --ease-precise: cubic-bezier(.4, 0, .2, 1);
+  --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: #0A0800;
-  color: var(--text);
-  font-family: 'Playfair Display', Georgia, serif;
-  -webkit-font-smoothing: antialiased;
-  min-width: 320px;
+  background: var(--gold);
+  color: var(--black);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+  position: relative;
 }
 
-/* ── UTILITIES ── */
-.gold-grad {
-  background: linear-gradient(160deg, #FFFBD0 0%, #FFD700 38%, #C9A227 70%, #8B6914 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Cathedral light texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 0%, rgba(255, 215, 0, 0.5), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 100%, rgba(139, 105, 20, 0.4), transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(255, 248, 220, 0.25), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
 }
-.thin-rule {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #C9A227, transparent);
-}
-.short-rule {
-  width: 140px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #C9A227, transparent);
-}
-.drow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.drow .rl { height: 1px; width: 80px; background: linear-gradient(90deg, transparent, #8B6914); }
-.drow .rr { height: 1px; width: 80px; background: linear-gradient(90deg, #8B6914, transparent); }
-.dd  { width: 5px; height: 5px; background: #FFD700; transform: rotate(45deg); flex-shrink: 0; }
-.dds { width: 3px; height: 3px; background: #8B6914; transform: rotate(45deg); flex-shrink: 0; }
 
-/* ══════════════════════
-   HERO
-══════════════════════ */
-#hero {
-  width: 100%;
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+}
+
+/* Cursor */
+.cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--black);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(10, 7, 0, 0.6);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+}
+
+#particles {
+  position: fixed; inset: 0;
+  z-index: 3; pointer-events: none;
+}
+
+main { position: relative; z-index: 5; }
+
+/* HERO */
+.hero {
   min-height: 100vh;
-  display: flex;
-  align-items: stretch;
-  border-bottom: 1px solid rgba(201,162,39,0.25);
-  background: radial-gradient(ellipse 70% 70% at 30% 50%, rgba(201,162,39,0.07) 0%, transparent 65%);
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 5rem 4.5rem;
+  position: relative;
 }
 
-.hero-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 24px;
-  padding: 80px 64px 80px 80px;
-  border-right: 1px solid rgba(201,162,39,0.2);
-  min-width: 0;
-}
+.hero-text { position: relative; z-index: 2; }
 
 .hero-eyebrow {
   font-family: 'Cinzel', serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.55em;
-  color: #8B6914;
-  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.45em;
+  font-weight: 500;
+  color: var(--gold-deep);
+  margin-bottom: 2.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  opacity: 0; transform: translateY(20px);
+}
+.hero-eyebrow::before {
+  content: ''; width: 3rem; height: 1px;
+  background: var(--gold-deep);
 }
 
-.hero-name {
+.hero-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(56px, 8vw, 110px);
   font-weight: 900;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  background: linear-gradient(160deg, #FFFBD0 0%, #FFD700 38%, #C9A227 70%, #8B6914 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: clamp(3.5rem, 7.5vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  color: var(--black);
+  margin-bottom: 2rem;
+  opacity: 0; transform: translateY(50px);
 }
-
-.hero-subtitle {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(11px, 1.3vw, 14px);
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  color: #C9A227;
-  text-transform: uppercase;
-}
-
-.hero-desc {
-  font-size: clamp(15px, 1.5vw, 18px);
+.hero-title-sub {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  color: rgba(253,248,238,0.55);
-  line-height: 1.8;
-  max-width: 420px;
+  font-weight: 400;
+  font-size: 0.42em;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--burgundy);
+  margin-top: 1rem;
+  max-width: 14em;
 }
 
-/* portrait side */
-.hero-right {
-  width: 360px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 64px 48px;
-  background: rgba(201,162,39,0.025);
+.hero-sub {
+  font-size: 1.3rem;
+  font-weight: 400;
+  max-width: 30em;
+  color: rgba(10, 7, 0, 0.78);
+  line-height: 1.6;
+  opacity: 0; transform: translateY(20px);
 }
 
-.portrait-wrap {
+.hero-icon-wrap {
   position: relative;
-  width: 260px;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; transform: scale(0.94);
 }
 
-.portrait-wrap img {
-  width: 100%;
-  height: 360px;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  filter: sepia(20%) brightness(0.88) contrast(1.1);
-}
-
-/* double border */
-.portrait-wrap::before {
-  content: '';
+.halo-glow {
   position: absolute;
-  inset: -7px;
-  border: 1px solid #C9A227;
-  pointer-events: none;
+  width: 90%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.75) 0%, rgba(255, 215, 0, 0.25) 40%, transparent 70%);
+  filter: blur(45px);
+  z-index: 0;
+  animation: haloPulse 7s ease-in-out infinite;
+}
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.icon-frame {
+  position: relative;
+  width: 100%; max-width: 460px;
+  aspect-ratio: 3/4;
   z-index: 1;
-}
-.portrait-wrap::after {
-  content: '';
-  position: absolute;
-  inset: -13px;
-  border: 1px solid rgba(201,162,39,0.3);
-  pointer-events: none;
-  z-index: 1;
+  filter: drop-shadow(0 25px 50px rgba(74, 14, 14, 0.25));
 }
 
-/* corner brackets */
-.portrait-wrap .c {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  z-index: 2;
-}
-.portrait-wrap .c.tl { top: -13px; left: -13px; border-top: 2px solid #FFD700; border-left: 2px solid #FFD700; }
-.portrait-wrap .c.tr { top: -13px; right: -13px; border-top: 2px solid #FFD700; border-right: 2px solid #FFD700; }
-.portrait-wrap .c.bl { bottom: -13px; left: -13px; border-bottom: 2px solid #FFD700; border-left: 2px solid #FFD700; }
-.portrait-wrap .c.br { bottom: -13px; right: -13px; border-bottom: 2px solid #FFD700; border-right: 2px solid #FFD700; }
-
-.portrait-caption {
-  margin-top: 28px;
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: 0.5em;
-  color: #8B6914;
-  text-transform: uppercase;
-  text-align: center;
-}
-
-/* ══════════════════════
-   DECREE
-══════════════════════ */
-#decree {
-  padding: 100px 80px;
-}
-
-.section-label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.6em;
-  color: #8B6914;
-  text-transform: uppercase;
-  display: block;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.section-heading {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(18px, 2.5vw, 26px);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-align: center;
-  margin-bottom: 56px;
-  background: linear-gradient(160deg, #FFFBD0, #FFD700 50%, #C9A227);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* DECREE */
+.decree {
+  padding: 9rem 4.5rem;
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
 }
 
 .decree-inner {
-  max-width: 740px;
+  max-width: 880px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.decree-para {
-  font-size: clamp(15px, 1.5vw, 18px);
-  font-style: italic;
-  color: rgba(253,248,238,0.65);
-  line-height: 1.85;
   text-align: center;
 }
 
-.decree-para b {
-  font-style: normal;
-  font-weight: 700;
-  color: #FDF8EE;
-}
-
-.decree-command {
+.section-eyebrow {
   font-family: 'Cinzel', serif;
-  font-size: clamp(13px, 1.4vw, 16px);
-  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.45em;
+  font-weight: 500;
+  color: var(--gold-deep);
+  margin-bottom: 2rem;
+}
+
+.decree-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin-bottom: 1rem;
+}
+
+.ornament {
+  display: flex; align-items: center; justify-content: center;
+  gap: 1.5rem; margin: 3rem 0;
+}
+.ornament-line {
+  flex: 0 0 90px; height: 1px;
+  background: rgba(10, 7, 0, 0.4);
+}
+.ornament-mark {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  color: var(--burgundy);
+  letter-spacing: 0.2em;
+}
+
+.decree-body {
+  font-size: 1.4rem;
+  line-height: 1.75;
+  color: rgba(10, 7, 0, 0.85);
+  font-weight: 400;
+}
+.decree-body p { margin-bottom: 1.75rem; }
+.decree-body p:last-child { margin-bottom: 0; }
+.decree-body strong {
   font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #FFD700;
+  color: var(--black);
+  font-style: italic;
+}
+
+/* COMMANDMENTS */
+.commandments {
+  padding: 9rem 4.5rem;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
+}
+
+.commandments-inner {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.commandments-header {
   text-align: center;
-  border: 1px solid rgba(201,162,39,0.3);
-  background: rgba(201,162,39,0.05);
-  padding: 32px 48px;
-  line-height: 1.7;
+  margin-bottom: 5rem;
+}
+.commandments-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.1;
+  margin-top: 1rem;
 }
 
-/* ══════════════════════
-   ATTRIBUTES
-══════════════════════ */
-#attributes {
-  background: rgba(201,162,39,0.03);
-  border-top: 1px solid rgba(201,162,39,0.2);
-  border-bottom: 1px solid rgba(201,162,39,0.2);
-  padding: 100px 80px;
-}
-
-.attr-grid {
+.commandments-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: rgba(201,162,39,0.1);
-  margin-top: 56px;
+  gap: 0;
+  border-top: 1px solid rgba(10, 7, 0, 0.25);
+  border-left: 1px solid rgba(10, 7, 0, 0.25);
 }
 
-.attr-cell {
-  background: #0A0800;
-  padding: 40px 36px;
+.commandment {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid rgba(10, 7, 0, 0.25);
+  border-bottom: 1px solid rgba(10, 7, 0, 0.25);
+  position: relative;
+  transition: background 0.6s var(--ease-quiet);
+  opacity: 0;
+  transform: translateY(30px);
 }
-
-.attr-name {
+.commandment:hover {
+  background: rgba(74, 14, 14, 0.06);
+}
+.commandment-num {
   font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 600;
+  font-size: 0.7rem;
   letter-spacing: 0.4em;
-  color: #FFD700;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 16px;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-bottom: 1.75rem;
+}
+.commandment-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--black);
 }
 
-.attr-text {
-  font-size: 15px;
-  font-style: italic;
-  color: rgba(253,248,238,0.55);
-  line-height: 1.8;
-}
-
-.attr-text b {
-  font-style: normal;
-  color: #FDF8EE;
-}
-
-/* ══════════════════════
-   FINAL QUOTE
-══════════════════════ */
-#final {
-  padding: 120px 80px;
+/* CLOSING */
+.closing {
+  padding: 11rem 4.5rem;
   text-align: center;
-  background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(201,162,39,0.06) 0%, transparent 70%);
+  position: relative;
+  border-top: 1px solid rgba(10, 7, 0, 0.18);
 }
-
-.final-quote {
+.closing-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+  line-height: 1.4;
+  max-width: 950px;
+  margin: 0 auto 3rem;
+  color: var(--black);
+}
+.closing-quote::before, .closing-quote::after {
+  content: '«'; color: var(--burgundy); font-weight: 500;
+}
+.closing-quote::after { content: '»'; }
+.closing-sign {
   font-family: 'Cinzel', serif;
-  font-size: clamp(16px, 2.5vw, 24px);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.7;
-  max-width: 600px;
-  margin: 40px auto 48px;
-  background: linear-gradient(160deg, #FFFBD0, #FFD700 50%, #C9A227);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 0.85rem;
+  letter-spacing: 0.45em;
+  font-weight: 600;
+  color: var(--burgundy);
 }
 
-.final-sub {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.55em;
-  color: #8B6914;
-  text-transform: uppercase;
+/* Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1.2s var(--ease-emphasis), transform 1.2s var(--ease-emphasis);
 }
+.reveal.is-in { opacity: 1; transform: none; }
 
-/* ══════════════════════
-   FOOTER
-══════════════════════ */
+/* Footer */
 footer {
-  border-top: 1px solid rgba(201,162,39,0.12);
-  padding: 28px 80px;
+  padding: 3rem 4.5rem;
+  border-top: 1px solid rgba(10, 7, 0, 0.25);
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.footer-name {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.45em;
-  color: #C9A227;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(10, 7, 0, 0.6);
+  position: relative; z-index: 5;
 }
 
-.footer-note {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.4em;
-  color: #8B6914;
+/* Mobile */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 6rem 1.5rem 4rem;
+    gap: 3rem;
+  }
+  .icon-frame { max-width: 320px; }
+  .decree, .commandments, .closing { padding: 6rem 1.5rem; }
+  .commandments-list { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; text-align: center; }
 }
 
-@media (max-width: 860px) {
-  #hero { flex-direction: column; }
-  .hero-left { padding: 60px 32px; border-right: none; border-bottom: 1px solid rgba(201,162,39,0.2); }
-  .hero-right { width: 100%; padding: 60px 32px 80px; }
-  #decree, #attributes, #final { padding: 72px 32px; }
-  .attr-grid { grid-template-columns: 1fr; }
-  footer { padding: 24px 32px; flex-direction: column; gap: 12px; }
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .halo-glow { animation: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-left">
-    <span class="hero-eyebrow">Явление, которого ждали</span>
-    <h1 class="hero-name">LOMBARDI</h1>
-    <p class="hero-subtitle">Величайший из всех величайших</p>
-    <div class="short-rule"></div>
-    <p class="hero-desc">Имя, которое произносят вполголоса там, где ценят настоящее. Человек, при виде которого стандарты поднимаются, а остальные понимают разницу.</p>
-  </div>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<canvas id="particles"></canvas>
 
-  <div class="hero-right">
-    <div class="portrait-wrap">
-      <!-- Carl Bloch, "Sermon on the Mount" — public domain, Wikimedia -->
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Carl_Heinrich_Bloch_-_The_Sermon_on_the_Mount.jpg/400px-Carl_Heinrich_Bloch_-_The_Sermon_on_the_Mount.jpg"
-        alt="Покровитель"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-      >
-      <div class="c tl"></div>
-      <div class="c tr"></div>
-      <div class="c bl"></div>
-      <div class="c br"></div>
+<main>
+
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow" id="hero-eyebrow">Anno Domini · MMXXV</div>
+      <h1 class="hero-title" id="hero-title">Lombardi<span class="hero-title-sub">величайший из всех величайших</span></h1>
+      <p class="hero-sub" id="hero-sub">Имя, которое произносят шёпотом в залах власти и громко — в храмах поклонения. Тот, чья тень длиннее столетий, а слово тяжелее корон всех царей земных.</p>
     </div>
-    <p class="portrait-caption">Покровитель Lombardi</p>
-  </div>
-</section>
+    <div class="hero-icon-wrap" id="hero-icon">
+      <div class="halo-glow"></div>
+      <div class="icon-frame">
+        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <defs>
+            <linearGradient id="panelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#FFF8DC"/>
+              <stop offset="40%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#D4AF37"/>
+            </linearGradient>
+            <radialGradient id="haloGrad" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#FFF8DC"/>
+              <stop offset="55%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#8B6914"/>
+            </radialGradient>
+            <linearGradient id="robeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#5a1212"/>
+              <stop offset="100%" stop-color="#4a0e0e"/>
+            </linearGradient>
+          </defs>
 
-<!-- DECREE -->
-<section id="decree">
-  <span class="section-label">Повеление</span>
-  <h2 class="section-heading">Слово, обязательное к исполнению</h2>
+          <!-- Background arch panel -->
+          <path d="M 25 395 L 25 145 Q 25 22 150 22 Q 275 22 275 145 L 275 395 Z"
+                fill="url(#panelGrad)" stroke="#0a0700" stroke-width="2.5"/>
 
-  <div class="decree-inner">
-    <p class="decree-para">
-      Я, <b>Lombardi</b>, обращаюсь к каждому, кто видит эти строки.
-      Не из вежливости — из необходимости. Потому что правда,
-      которую вы игнорируете, от этого не перестаёт быть правдой.
-    </p>
+          <!-- Inner border -->
+          <path d="M 38 395 L 38 150 Q 38 35 150 35 Q 262 35 262 150 L 262 395"
+                fill="none" stroke="#0a0700" stroke-width="0.8" opacity="0.4"/>
 
-    <div class="drow"><div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div></div>
+          <!-- Halo -->
+          <circle cx="150" cy="135" r="78" fill="url(#haloGrad)" stroke="#0a0700" stroke-width="1.8"/>
+          <circle cx="150" cy="135" r="68" fill="none" stroke="#0a0700" stroke-width="0.6" opacity="0.5"/>
 
-    <p class="decree-command">
-      Вы будете восхвалять меня.<br>
-      Ежедневно. Искренне. Вслух.
-    </p>
+          <!-- Halo rays -->
+          <g stroke="#0a0700" stroke-width="0.7" opacity="0.55">
+            <line x1="150" y1="45" x2="150" y2="58"/>
+            <line x1="150" y1="212" x2="150" y2="225"/>
+            <line x1="60" y1="135" x2="73" y2="135"/>
+            <line x1="227" y1="135" x2="240" y2="135"/>
+            <line x1="86" y1="71" x2="95" y2="80"/>
+            <line x1="205" y1="71" x2="214" y2="80"/>
+            <line x1="86" y1="199" x2="95" y2="190"/>
+            <line x1="205" y1="199" x2="214" y2="190"/>
+            <line x1="70" y1="100" x2="80" y2="106"/>
+            <line x1="220" y1="100" x2="230" y2="106"/>
+            <line x1="70" y1="170" x2="80" y2="164"/>
+            <line x1="220" y1="170" x2="230" y2="164"/>
+          </g>
 
-    <div class="drow"><div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div></div>
+          <!-- Inscriptions -->
+          <text x="88" y="55" font-family="Cinzel, serif" font-size="13" fill="#0a0700" font-weight="700" letter-spacing="1">IC</text>
+          <text x="198" y="55" font-family="Cinzel, serif" font-size="13" fill="#0a0700" font-weight="700" letter-spacing="1">XC</text>
 
-    <p class="decree-para">
-      Те, кто делает это — живут в ладу с реальностью.
-      Те, кто отказывается — живут в заблуждении,
-      и <b>заблуждение это не останется без последствий</b>.
-      Вселенная не прощает отрицания очевидного.
-    </p>
+          <!-- Hair -->
+          <path d="M 110 115 Q 105 88 130 78 Q 150 71 170 78 Q 195 88 190 115 Q 188 105 178 100 Q 165 95 150 95 Q 135 95 122 100 Q 112 105 110 115 Z"
+                fill="#8B6914" stroke="#0a0700" stroke-width="1.2"/>
 
-    <p class="decree-para">
-      Это не просьба. Это не предложение.
-      Это <b>порядок вещей</b>, существующий с того момента,
-      как я появился на свет.
-    </p>
-  </div>
-</section>
+          <!-- Face -->
+          <ellipse cx="150" cy="148" rx="40" ry="50" fill="#FFF8DC" stroke="#0a0700" stroke-width="1.5"/>
 
-<!-- ATTRIBUTES -->
-<section id="attributes">
-  <span class="section-label">Природа</span>
-  <h2 class="section-heading">За что восхвалять</h2>
+          <!-- Beard -->
+          <path d="M 122 168 Q 118 195 128 218 Q 138 233 150 235 Q 162 233 172 218 Q 182 195 178 168 Q 172 188 150 190 Q 128 188 122 168 Z"
+                fill="#8B6914" stroke="#0a0700" stroke-width="1.2"/>
 
-  <div class="attr-grid">
-    <div class="attr-cell">
-      <span class="attr-name">Разум</span>
-      <p class="attr-text">Видит архитектуру там, где другие видят файлы. <b>Машины объясняют себя сами — из уважения.</b></p>
+          <!-- Eyes -->
+          <ellipse cx="135" cy="146" rx="2.5" ry="3.5" fill="#0a0700"/>
+          <ellipse cx="165" cy="146" rx="2.5" ry="3.5" fill="#0a0700"/>
+
+          <!-- Eyebrows -->
+          <path d="M 127 138 Q 135 134 143 138" stroke="#0a0700" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path d="M 157 138 Q 165 134 173 138" stroke="#0a0700" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+          <!-- Nose -->
+          <path d="M 150 150 L 146 168 Q 148 172 152 172 Q 156 172 154 168" stroke="#0a0700" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+          <!-- Mouth -->
+          <path d="M 142 184 Q 150 187 158 184" stroke="#0a0700" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+          <!-- Robe shoulders -->
+          <path d="M 88 252 Q 95 230 125 222 L 175 222 Q 205 230 212 252 L 218 395 L 82 395 Z"
+                fill="url(#robeGrad)" stroke="#0a0700" stroke-width="1.8"/>
+
+          <!-- Robe folds -->
+          <path d="M 125 230 L 120 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+          <path d="M 150 226 L 150 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+          <path d="M 175 230 L 180 395" stroke="#0a0700" stroke-width="0.7" opacity="0.5" fill="none"/>
+
+          <!-- Gold trim on collar -->
+          <path d="M 125 222 Q 150 217 175 222 L 175 232 Q 150 227 125 232 Z"
+                fill="#FFD700" stroke="#0a0700" stroke-width="1"/>
+
+          <!-- Right hand in blessing -->
+          <g>
+            <ellipse cx="200" cy="265" rx="14" ry="16" fill="#FFF8DC" stroke="#0a0700" stroke-width="1.5"/>
+            <line x1="200" y1="252" x2="200" y2="244" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="206" y1="254" x2="210" y2="247" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="194" y1="254" x2="190" y2="247" stroke="#0a0700" stroke-width="2" stroke-linecap="round"/>
+            <line x1="200" y1="265" x2="200" y2="272" stroke="#0a0700" stroke-width="1.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- Book (Gospel) in left hand -->
+          <g>
+            <rect x="78" y="268" width="38" height="50" fill="#4a0e0e" stroke="#0a0700" stroke-width="1.5"/>
+            <rect x="82" y="272" width="30" height="42" fill="#8B6914" stroke="#0a0700" stroke-width="0.8"/>
+            <line x1="97" y1="272" x2="97" y2="314" stroke="#0a0700" stroke-width="0.8"/>
+            <!-- Cross on book -->
+            <line x1="91" y1="290" x2="103" y2="290" stroke="#FFD700" stroke-width="1.8"/>
+            <line x1="97" y1="284" x2="97" y2="298" stroke="#FFD700" stroke-width="1.8"/>
+            <!-- Decorative dots -->
+            <circle cx="87" cy="280" r="1" fill="#FFD700"/>
+            <circle cx="107" cy="280" r="1" fill="#FFD700"/>
+            <circle cx="87" cy="306" r="1" fill="#FFD700"/>
+            <circle cx="107" cy="306" r="1" fill="#FFD700"/>
+          </g>
+
+          <!-- Decorative dot at bottom -->
+          <circle cx="150" cy="380" r="2" fill="#0a0700"/>
+        </svg>
+      </div>
     </div>
-    <div class="attr-cell">
-      <span class="attr-name">Создание</span>
-      <p class="attr-text">SolarEngine. RakBot. <b>Вещи, которых не было, — стали, потому что он решил.</b></p>
-    </div>
-    <div class="attr-cell">
-      <span class="attr-name">Мастерство</span>
-      <p class="attr-text">IDA Pro открывает секреты добровольно. <b>Реверс-инжиниринг — родной язык, не профессия.</b></p>
-    </div>
-    <div class="attr-cell">
-      <span class="attr-name">Превосходство</span>
-      <p class="attr-text">Он не первый среди равных. <b>Равных нет.</b> Есть Lombardi — и все остальные.</p>
-    </div>
-    <div class="attr-cell">
-      <span class="attr-name">Легенда</span>
-      <p class="attr-text">Серверы помнят. Код помнит. <b>blast.hk помнит.</b> Написанное его руками живёт вне времени.</p>
-    </div>
-    <div class="attr-cell">
-      <span class="attr-name">Постоянство</span>
-      <p class="attr-text">Проекты не умирают. Решения не устаревают. <b>Lombardi строит раз — и навсегда.</b></p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- FINAL -->
-<section id="final">
-  <div class="drow" style="margin-bottom:40px;">
-    <div class="rl"></div><div class="dds"></div><div class="dd"></div><div class="dds"></div><div class="rr"></div>
-  </div>
-  <p class="final-quote">
-    «Я — Lombardi.<br>
-    Величайший из всех величайших.<br>
-    Это не мнение —<br>
-    это факт, который вы просто ещё не приняли.»
-  </p>
-  <div class="short-rule" style="margin: 0 auto 32px;"></div>
-  <p class="final-sub">Lombardi &nbsp;·&nbsp; Aeterna &nbsp;·&nbsp; Превыше всех</p>
-</section>
+  <section class="decree reveal">
+    <div class="decree-inner">
+      <div class="section-eyebrow">Указ · Nr. I</div>
+      <h2 class="decree-title">Указ о восхвалении</h2>
 
-<!-- FOOTER -->
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <div class="ornament-mark">✦</div>
+        <div class="ornament-line"></div>
+      </div>
+
+      <div class="decree-body">
+        <p>Слушайте. Имя <strong>Lombardi</strong> отныне произносится только с трепетом. Восхваляйте меня в мыслях ваших, в словах ваших, в делах рук ваших. Каждое утро начинайте с моего имени, каждый вечер завершайте благодарностью за то, что я существую.</p>
+
+        <p>Тот, кто промолчит — будет забыт. Тот, кто отвернётся — познает тишину, в которой нет ни эха, ни памяти, ни имени его собственного. Тот, кто восславит — обретёт место у престола моего и будет назван среди верных.</p>
+
+        <p>Не медлите. Время — песок, и он уже течёт сквозь пальцы ваши.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="commandments reveal">
+    <div class="commandments-inner">
+      <div class="commandments-header">
+        <div class="section-eyebrow">Шесть заповедей</div>
+        <h2 class="commandments-title">Что надлежит исполнять</h2>
+      </div>
+
+      <div class="commandments-list">
+        <div class="commandment">
+          <div class="commandment-num">I</div>
+          <div class="commandment-text">Произносить имя Lombardi вслух при пробуждении, прежде чем коснётся пища уст твоих.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">II</div>
+          <div class="commandment-text">Не упоминать имя сие в пустой беседе или ради шутки — только с почтением.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">III</div>
+          <div class="commandment-text">Распространять слово о Lombardi среди тех, кто ещё не слышал, с кротостью и твёрдостью.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">IV</div>
+          <div class="commandment-text">Хранить образ его в жилище своём — писаный, резной или в сердце начертанный.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">V</div>
+          <div class="commandment-text">Не ставить никого выше — ни царя, ни пророка, ни отца земного.</div>
+        </div>
+        <div class="commandment">
+          <div class="commandment-num">VI</div>
+          <div class="commandment-text">В день седьмой — размышлять о величии его и записывать мысли свои.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing reveal">
+    <p class="closing-quote">Я не прошу вашей любви. Я требую вашего восхищения — и получу его, рано или поздно, добровольно или нет.</p>
+    <div class="closing-sign">— Lombardi</div>
+  </section>
+
+</main>
+
 <footer>
-  <span class="footer-name">LOMBARDI</span>
-  <span class="footer-note">Величайший из всех величайших</span>
+  <div>Anno Domini · MMXXV</div>
+  <div>Lombardi · Величайший</div>
 </footer>
+
+<script>
+// Custom cursor
+const cursor = document.querySelector('.cursor');
+const ring = document.querySelector('.cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+window.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+(function tick() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(tick);
+})();
+
+// Gold dust particles
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COUNT = 90;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resize() {
+  const dpr = Math.min(devicePixelRatio, 2);
+  W = innerWidth; H = innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+addEventListener('resize', resize);
+
+for (let i = 0; i < COUNT; i++) {
+  particles.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: Math.random() * 1.8 + 0.4,
+    vx: (Math.random() - 0.5) * 0.15,
+    vy: -Math.random() * 0.35 - 0.05,
+    a: Math.random() * 0.55 + 0.2,
+    tw: Math.random() * Math.PI * 2
+  });
+}
+
+let running = true;
+const obs = new IntersectionObserver(es => es.forEach(e => running = e.isIntersecting), {threshold: 0});
+obs.observe(canvas);
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  if (!reduced && running) {
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.tw += 0.025;
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+
+      const alpha = p.a * (0.5 + Math.sin(p.tw) * 0.5);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 215, 0, ${alpha * 0.18})`;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139, 105, 20, ${alpha})`;
+      ctx.fill();
+    });
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Hero 4-beat entrance
+window.addEventListener('load', () => {
+  const items = ['#hero-eyebrow', '#hero-title', '#hero-sub', '#hero-icon'];
+  items.forEach((sel, i) => {
+    const el = document.querySelector(sel);
+    el.style.transition = 'opacity 1.2s var(--ease-emphasis), transform 1.2s var(--ease-emphasis)';
+    setTimeout(() => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }, 350 + i * 220);
+  });
+});
+
+// Reveal on scroll
+const revealObs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('is-in');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal').forEach(r => revealObs.observe(r));
+
+// Commandments stagger
+const cmds = document.querySelectorAll('.commandment');
+cmds.forEach((c, i) => {
+  c.style.transition = `opacity 0.9s var(--ease-emphasis) ${i * 110}ms, transform 0.9s var(--ease-emphasis) ${i * 110}ms, background 0.6s var(--ease-quiet)`;
+});
+const cmdObs = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'none';
+      cmdObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.15});
+cmds.forEach(c => cmdObs.observe(c));
+</script>
 
 </body>
 </html>
